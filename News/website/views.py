@@ -23,7 +23,7 @@ class Index(View):
         for root_category in root_categories:
             latest_news_on_cat = News.objects\
                 .filter(root_category=root_category)\
-                .order_by('-publish_date', '-publish_time')[:4]
+                .order_by('-view_count', '-publish_date', '-publish_time')[:4]
             latest_news_on_each_category[root_category] = [news for news in latest_news_on_cat]
 
         # get important posts slide bar
@@ -53,6 +53,9 @@ class Detail(View):
 
     def get(self, request, id):
         post = News.objects.get(id=id)
+        post.view_count += 1
+        post.save()
+
         context = {
             'post': post
         }
