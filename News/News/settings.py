@@ -56,7 +56,9 @@ ROOT_URLCONF = 'News.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            'website/template/'
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

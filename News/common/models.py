@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.urls import reverse
 
 class News(models.Model):
 
@@ -13,6 +13,11 @@ class News(models.Model):
     publish_date = models.DateField(verbose_name='Date')
     lead = models.TextField(verbose_name='Lead Text')
 
-
     class Meta:
         verbose_name_plural = 'NEWS'
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('news_detail', args=[self.id])
