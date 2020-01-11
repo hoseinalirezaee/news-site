@@ -45,4 +45,18 @@
 }
 .detail-news p{
     padding: 5px 20px;
+    text-align: justify;
+
+}
+
+.detail-news p[style*="float:none"]{
+    margin: 15px auto !important;
+}
+.view-counter{
+    background-color: #31acbe;
+    color: #fefefe;
+    display: inline-block;
+    padding: 10px;
+    border-radius: 5px;
+
 }
