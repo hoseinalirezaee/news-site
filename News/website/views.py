@@ -94,3 +94,18 @@ class Category(ListView):
     #         'category_list.html',
     #         context=context
     #     )
+
+
+class Search(ListView):
+    model = News
+    paginate_by = 20
+    template_name = 'search.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q', '')
+        queryset = []
+        if query:
+            queryset = News.objects.filter(title__contains=query)
+        self.extra_context = {'query': query}
+        return queryset
