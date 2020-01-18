@@ -1,8 +1,13 @@
+from django.db import IntegrityError
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import ListView
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, HttpResponseRedirect
 from common.models import News
+from common import models
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.models import User
+
 
 
 class Index(View):
@@ -11,8 +16,11 @@ class Index(View):
 
         str = ''
         # get root categories from database
-        root_categories_query_set = News.objects.values('root_category').distinct()
-        root_categories = [root_cat['root_category'] for root_cat in root_categories_query_set]
+        if request.user.is_authenticated:
+            root_categories_query_set = models.Category.objects.filter(user=request.user).values('name')
+        else:
+            root_categories_query_set = News.objects.values('root_category').distinct()
+        root_categories = [root_cat.get('root_category', None) or root_cat['name'] for root_cat in root_categories_query_set]
 
         # get latest news from database
         latest_news_query_set = News.objects.all().order_by('-publish_date', '-publish_time')[:8]
@@ -35,7 +43,6 @@ class Index(View):
         important_posts = [item for item in important_posts_query_set]
 
         context = {
-            'root_categories': root_categories,
             'latest_news': latest_news,
             'latest_news_on_each_category': latest_news_on_each_category,
             'important_posts_slide_bar': important_posts_slide_bar,
@@ -76,24 +83,9 @@ class Category(ListView):
 
     def get_queryset(self):
         category_name = self.kwargs['category_name']
-        queryset = News.objects.filter(root_category=category_name)
+        queryset = News.objects.filter(root_category=category_name).order_by('-publish_date', '-publish_time')
         self.extra_context = {'category_name': category_name}
         return queryset
-
-    # def get(self, reqeust, category_name):
-    #
-    #     posts_query_set = News.objects.filter(root_category=category_name)[:30]
-    #
-    #     context = {
-    #         'category_name': category_name,
-    #         'posts': posts_query_set
-    #     }
-    #
-    #     return render(
-    #         reqeust,
-    #         'category_list.html',
-    #         context=context
-    #     )
 
 
 class Search(ListView):
@@ -109,3 +101,111 @@ class Search(ListView):
             queryset = News.objects.filter(title__contains=query)
         self.extra_context = {'query': query}
         return queryset
+
+
+class Manage(View):
+
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            user: User = request.user
+            if user.is_staff:
+                if request.GET:
+                    post = News.objects.get(id=request.GET.get('news_id'))
+                    return render(request, 'edit.html', context={'post': post})
+                else:
+                    return render(request, 'adminlog.html')
+        return HttpResponse('You dont have access.')
+
+
+    def post(self, request):
+        if request.user.is_authenticated:
+            user: User = request.user
+            if user.is_staff:
+                title = request.POST.get('title')
+                category = request.POST.get('category')
+                body = request.POST.get('body')
+                image = request.POST.get('image')
+                News.objects.update_or_create(
+                    title=title,
+                    body=body,
+                    root_category=category,
+                    image=image,
+                )
+                return HttpResponseRedirect('/')
+
+        return HttpResponse('You dont have access.')
+
+class Edit(View):
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            user: User = request.user
+            if user.is_staff:
+                if request.GET:
+                    post = News.objects.get(id=request.GET.get('news_id'))
+                    return render(request, 'edit.html', context={'post': post})
+        return HttpResponse('You dont have access.')
+
+    def post(self, request):
+        if request.user.is_authenticated:
+            user: User = request.user
+            if user.is_staff:
+                title = request.POST.get('title')
+                category = request.POST.get('category')
+                body = request.POST.get('body')
+                image = request.POST.get('image')
+                id = request.POST.get('id')
+                post: News = News.objects.get(id=id)
+                post.title = title
+                post.body = body
+                post.root_category = category
+                post.image = image
+                post.save()
+                return HttpResponseRedirect('/manage/')
+
+        return HttpResponse('You dont have access.')
+
+
+class SetFavoriteCategory(View):
+
+    def post(self, request):
+        pass
+
+
+class Login(LoginView):
+    template_name = 'index.html'
+
+class Logout(LogoutView):
+    template_name = 'index.html'
+    next_page = '/'
+
+class SignUp(View):
+
+    def post(self, request):
+        username = request.POST.get('username', None)
+        password = request.POST.get('password', None)
+        first_name = request.POST.get('first_name', None)
+        last_name = request.POST.get('last_name', None)
+        email = request.POST.get('email')
+
+        try:
+            user: User = User.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)
+        except IntegrityError:
+            return HttpResponse('Failure')
+
+        return HttpResponse('True')
+
+
+class Personalize(View):
+
+    def post(self, request):
+        selected_categories = request.POST.getlist('selected_categories', '')
+        user: User = request.user
+        user_categories = models.Category.objects.filter(user=user)
+        for cat in user_categories:
+            cat.delete()
+        for cat in selected_categories:
+            models.Category.objects.create(name=cat, user=user)
+
+        return HttpResponseRedirect('/')
