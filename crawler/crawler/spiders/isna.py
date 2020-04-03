@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 from bs4 import BeautifulSoup
 from scrapy import Request
@@ -23,7 +24,8 @@ class IsnaSpider(XMLFeedSpider):
         data['summary'] = selector.xpath('description/text()').get()
         data['mainImage'] = selector.xpath('enclosure/@url').get()
         data['category'] = re.search(category_pattern, raw_category).group(1).strip()
-        data['dataTime'] = selector.xpath('pubDate/text()').get()
+        data['dateTime'] = selector.xpath('pubDate/text()').get()
+        data['dateTime'] = datetime.strptime(data['dateTime'], '%a, %d %b %Y %H:%M:%S %Z').strftime('%Y-%m-%d %H:%M:%S')
         data['postId'] = re.search(id_pattern, post_url).group(1)
 
         return Request(
@@ -43,7 +45,7 @@ class IsnaSpider(XMLFeedSpider):
                 paragraphs.append(
                     {
                         'type': 'image',
-                        'data': image_url.strip()
+                        'body': image_url.strip()
                     }
                 )
             else:
@@ -53,9 +55,11 @@ class IsnaSpider(XMLFeedSpider):
                     paragraphs.append(
                         {
                             'type': 'text',
-                            'data': text.strip()
+                            'body': text.strip()
                         }
                     )
             data['paragraphs'] = paragraphs
             data['tags'] = response.xpath('//footer[@class="tags"]/.//a/text()').getall()
+            data['agencyCode'] = 'isna'
+            data['agencyTitle'] = 'خبرگزاری ایسنا'
         return data
