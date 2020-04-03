@@ -34,13 +34,16 @@ class PostSerializer(serializers.Serializer):
 
         post, created = models.Post.objects.get_or_create(
             title=validated_data['title'],
-            summary=validated_data['summary'],
-            main_image=validated_data['mainImage'],
-            date_posted=validated_data['dateTime'],
-            origin_id=validated_data['postId'],
-            origin_url=validated_data['postUrl'],
-            category=category,
-            agency=agency
+            defaults={
+                'summary': validated_data['summary'],
+                'main_image': validated_data['mainImage'],
+                'date_posted': validated_data['dateTime'],
+                'origin_id': validated_data['postId'],
+                'origin_url': validated_data['postUrl'],
+                'category': category,
+                'agency': agency
+            }
+
         )
 
         paragraphs = validated_data['paragraphs']
