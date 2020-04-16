@@ -1,3 +1,4 @@
+import jsonfield
 from django.db import models
 from django.db.models import Index
 from django.utils.translation import gettext_lazy as _
@@ -11,6 +12,7 @@ class Post(models.Model):
     date_created = models.DateTimeField(_('date created'), auto_now_add=True)
     origin_id = models.PositiveIntegerField(_('origin id'))
     origin_url = models.URLField(_('origin url'), max_length=1024)
+    paragraphs = jsonfield.JSONField()
 
     agency = models.ForeignKey(
         'Agency',
@@ -64,21 +66,21 @@ class Category(models.Model):
         return self.title
 
 
-class Paragraph(models.Model):
-    class Type(models.TextChoices):
-        Text = 'text'
-        Image = 'image'
-
-    body = models.CharField(_('body'), max_length=5000)
-    type = models.CharField(_('paragraph type'), max_length=10, choices=Type.choices)
-    order = models.PositiveSmallIntegerField()
-
-    post = models.ForeignKey(
-        to='Post',
-        on_delete=models.PROTECT,
-        related_name='paragraphs',
-        related_query_name='paragraphs'
-    )
+# class Paragraph(models.Model):
+#     class Type(models.TextChoices):
+#         Text = 'text'
+#         Image = 'image'
+#
+#     body = models.CharField(_('body'), max_length=5000)
+#     type = models.CharField(_('paragraph type'), max_length=10, choices=Type.choices)
+#     order = models.PositiveSmallIntegerField()
+#
+#     post = models.ForeignKey(
+#         to='Post',
+#         on_delete=models.PROTECT,
+#         related_name='paragraphs',
+#         related_query_name='paragraphs'
+#     )
 
 
 class Agency(models.Model):

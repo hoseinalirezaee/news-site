@@ -4,11 +4,6 @@ from rest_framework import serializers
 from db import models
 
 
-class ParagraphSerializer(serializers.Serializer):
-    type = serializers.ChoiceField(['text', 'image'])
-    body = serializers.CharField()
-
-
 class PostSerializer(serializers.Serializer):
     title = serializers.CharField()
     postUrl = serializers.URLField()
@@ -17,7 +12,7 @@ class PostSerializer(serializers.Serializer):
     category = serializers.CharField()
     dateTime = serializers.DateTimeField()
     postId = serializers.IntegerField()
-    paragraphs = ParagraphSerializer(many=True)
+    paragraphs = serializers.JSONField()
     tags = serializers.ListField(child=serializers.CharField(), allow_null=True, allow_empty=True)
     agencyTitle = serializers.CharField()
     agencyCode = serializers.CharField()
@@ -46,14 +41,7 @@ class PostSerializer(serializers.Serializer):
 
         )
 
-        paragraphs = validated_data['paragraphs']
-        for i in range(len(paragraphs)):
-            models.Paragraph.objects.create(
-                body=paragraphs[i]['body'],
-                type=paragraphs[i]['type'],
-                order=i,
-                post=post
-            )
+        post.paragraphs = validated_data['paragraphs']
 
         for tag in validated_data['tags']:
             tag, created = models.Tag.objects.get_or_create(
