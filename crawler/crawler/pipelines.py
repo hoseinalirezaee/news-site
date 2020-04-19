@@ -1,11 +1,13 @@
-# -*- coding: utf-8 -*-
+from fastjsonschema import JsonSchemaException
+from scrapy.exceptions import DropItem
 
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
+from .json.validator import validate
 
 
-class CrawlerPipeline(object):
+class ValidatorPipeline:
+
     def process_item(self, item, spider):
-        return item
+        try:
+            return validate(item)
+        except JsonSchemaException:
+            raise DropItem
