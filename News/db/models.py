@@ -1,16 +1,17 @@
 import jsonfield
 from django.db import models
 from django.db.models import Index
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
 class Post(models.Model):
     title = models.CharField(_('title'), max_length=512, unique=True)
-    summary = models.CharField(_('summary'), max_length=2000)
+    summary = models.CharField(_('summary'), max_length=2000, null=True, blank=True)
     main_image = models.URLField(_('main image'), max_length=1024, null=True, blank=True)
     date_posted = models.DateTimeField(_('date posted'))
     date_created = models.DateTimeField(_('date created'), auto_now_add=True)
-    origin_id = models.PositiveIntegerField(_('origin id'))
+    origin_id = models.CharField(_('origin id'), max_length=20, null=True, blank=True)
     origin_url = models.URLField(_('origin url'), max_length=1024)
     paragraphs = jsonfield.JSONField()
 
@@ -34,6 +35,9 @@ class Post(models.Model):
         related_name='posts',
         related_query_name='posts'
     )
+
+    def get_absolute_url(self):
+        return reverse('post-detail', kwargs={'pk': self.id})
 
 
 class Tag(models.Model):
