@@ -8,7 +8,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -17,6 +16,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'db',
+    'api',
+    'web',
     'rest_framework'
 ]
 
@@ -43,6 +44,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'web.context_processors.get_root_categories'
             ],
         },
     },
@@ -51,12 +53,19 @@ TEMPLATES = [
 WSGI_APPLICATION = 'News.wsgi.application'
 
 DATABASES = {
-    'default': {
+    'sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    },
+    'default': {
+        'NAME': 'django_postgres',
+        'ENGINE': 'django.db.backends.postgresql',
+        'USER': 'root',
+        'PASSWORD': '1',
+        'HOST': '127.0.0.1',
+        'PORT': 12000
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -87,7 +96,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 STATIC_URL = '/static/'
+STATIC_ROOT = 'statics/'
 
-LOGIN_REDIRECT_URL = '/'
+MEDIA_ROOT = '/home/hosein/Documents/NewsSite/News/web/static/'
+MEDIA_URL = 'http://localhost:8000/static/'

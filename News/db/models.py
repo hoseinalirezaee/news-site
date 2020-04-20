@@ -69,6 +69,9 @@ class Category(models.Model):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return '%s?category=%d' % (reverse('post-list-view'), self.id)
+
 
 class Agency(models.Model):
     title = models.CharField(_('agency'), max_length=30)
@@ -77,3 +80,9 @@ class Agency(models.Model):
 
     class Meta:
         indexes = [Index(fields=['code'])]
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return '%s?agency=%d' % (reverse('post-list-view'), self.id)
