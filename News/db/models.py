@@ -70,26 +70,10 @@ class Category(models.Model):
         return self.title
 
 
-# class Paragraph(models.Model):
-#     class Type(models.TextChoices):
-#         Text = 'text'
-#         Image = 'image'
-#
-#     body = models.CharField(_('body'), max_length=5000)
-#     type = models.CharField(_('paragraph type'), max_length=10, choices=Type.choices)
-#     order = models.PositiveSmallIntegerField()
-#
-#     post = models.ForeignKey(
-#         to='Post',
-#         on_delete=models.PROTECT,
-#         related_name='paragraphs',
-#         related_query_name='paragraphs'
-#     )
-
-
 class Agency(models.Model):
     title = models.CharField(_('agency'), max_length=30)
     code = models.CharField(_('code'), max_length=25)
+    image = models.ImageField(_('agency image'), blank=True, null=True)
 
     class Meta:
         indexes = [Index(fields=['code'])]
