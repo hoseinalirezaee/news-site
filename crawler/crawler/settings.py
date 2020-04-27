@@ -4,7 +4,7 @@ SPIDER_MODULES = ['crawler.spiders']
 
 NEWSPIDER_MODULE = 'crawler.spiders'
 
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 CONCURRENT_REQUESTS = 32
 
