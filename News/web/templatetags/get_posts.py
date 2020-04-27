@@ -19,6 +19,17 @@ def get_posts(category):
     queryset.order_by('-date_posted')
 
     data = []
+
+    if queryset.count() < 8:
+        for post in queryset:
+            data.append(
+                {
+                    'type': 1,
+                    'items': post
+                }
+            )
+        return data
+
     start_index = 1
 
     data.append(
