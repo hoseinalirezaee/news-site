@@ -7,7 +7,7 @@ class IsnaAllNews(AllNewsMixin, IsnaBaseSpider):
 
     archive_url = 'http://www.isna.ir/page/archive.xhtml'
     links_xpath = '//div[@class="items"]/.//h3/a/@href'
-    days = 1
+    days = 7
 
     def get_date_query_parameter(self, filter_date):
         return {

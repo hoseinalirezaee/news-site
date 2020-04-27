@@ -5,7 +5,7 @@ from ..base import AllNewsMixin
 class FarsAllNewsSpider(AllNewsMixin, FarsBaseSpider):
     name = 'fars-all-news'
 
-    days = 60
+    days = 7
     links_xpath = '//ul[contains(@class, "last-news")]/li/a/@href'
     archive_url = 'https://www.farsnews.ir/archive'
 

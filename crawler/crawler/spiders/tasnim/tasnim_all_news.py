@@ -7,7 +7,7 @@ class TasnimAllNews(AllNewsMixin, TasnimBaseSpider):
 
     archive_url = 'https://www.tasnimnews.com/fa/archive'
     links_xpath = '//article[contains(@class, "list-item")]/a/@href'
-    days = 1
+    days = 7
 
     def get_date_query_parameter(self, filter_date):
         return {

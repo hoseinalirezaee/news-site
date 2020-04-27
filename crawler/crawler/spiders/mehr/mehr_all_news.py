@@ -7,7 +7,7 @@ class MehrAllNews(AllNewsMixin, MehrBaseSpider):
 
     archive_url = 'https://www.mehrnews.com/page/archive.xhtml'
     links_xpath = '//li[@class="news"]//h3/a/@href'
-    days = 1
+    days = 7
 
     def get_date_query_parameter(self, filter_date):
         return {

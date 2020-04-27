@@ -7,7 +7,7 @@ class IrnaAllNewsSpider(AllNewsMixin, IrnaBaseSpider):
 
     archive_url = 'https://www.irna.ir/archive'
     links_xpath = '//div[contains(@class, "main-content")]//h3/a/@href'
-    days = 1
+    days = 7
 
     def get_date_query_parameter(self, filter_date):
         return {
