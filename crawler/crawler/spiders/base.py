@@ -1,6 +1,6 @@
 from datetime import datetime
 from datetime import timedelta
-from urllib.parse import urlsplit, urlunsplit, urlencode
+from urllib.parse import urlsplit, urlunsplit, urlencode, urljoin, quote
 
 from bs4 import BeautifulSoup
 from jdatetime import date as jdate
@@ -59,7 +59,7 @@ class ParsePageMixin:
         title = response.xpath(self.title_xpath).get()
         if title:
             title = title.strip()
-        return title
+        return title or None
 
     def get_summary(self, response):
         if not self.summary_xpath:
@@ -68,14 +68,15 @@ class ParsePageMixin:
         summary = response.xpath(self.summary_xpath).get()
         if summary:
             summary = summary.strip()
-        return summary
+        return summary or None
 
     def get_tags(self, response):
         if not self.tags_xpath:
             raise NotImplementedError('You must either implement `get_tags` or set `tags_xpath`')
         tags = []
         for tag in response.xpath(self.tags_xpath).getall():
-            if tag.strip():
+            striped_tag = tag.strip()
+            if striped_tag and len(striped_tag) < 100:
                 tags.append(tag.strip())
         return tags
 
@@ -102,7 +103,19 @@ class ParsePageMixin:
         if not self.main_image_xpath:
             raise NotImplementedError('You must either implement `get_main_image` or set `main_image_xpath`')
 
-        return response.xpath(self.main_image_xpath).get()
+        image_url = response.xpath(self.main_image_xpath).get()
+        if not image_url:
+            return None
+        if not urlsplit(image_url).netloc:
+            image_url = urljoin(self.website_url, image_url)
+        components = urlsplit(image_url)
+        image_url = urlunsplit((components.scheme,
+                                components.netloc,
+                                quote(components.path.encode('utf-8')),
+                                components.query,
+                                components.fragment))
+
+        return image_url
 
     def get_post_url(self, response):
         if not self.post_url_xpath:
@@ -111,8 +124,10 @@ class ParsePageMixin:
         post_url = response.xpath(self.post_url_xpath).get()
         if not post_url:
             return None
-        url_components = urlsplit(post_url, self.url_schema)
-        return urlunsplit(url_components)
+        if 'http' not in post_url and 'https' not in post_url:
+            post_url = '%s://%s' % (self.url_schema, post_url)
+
+        return post_url
 
     def get_post_id(self, response):
         if not self.post_id_xpath:
