@@ -39,6 +39,15 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('post-detail', kwargs={'pk': self.id})
 
+    @property
+    def breadcrumb(self):
+        breadcrumb = []
+        current = self.category
+        while current is not None:
+            breadcrumb.insert(0, current)
+            current = current.parent
+        return breadcrumb
+
 
 class Tag(models.Model):
     title = models.CharField(_('tag'), max_length=200)
