@@ -1,8 +1,29 @@
 import jsonfield
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Index
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+
+
+class User(AbstractUser):
+    favorite_categories = models.ManyToManyField(
+        to='Category',
+        through='UserFavoriteCategory',
+        related_name='users_who_favor'
+    )
+
+    bookmark = models.ManyToManyField(
+        to='Post',
+        through='UserBookmark',
+        related_name='users_who_bookmark'
+    )
+
+    favorite_agencies = models.ManyToManyField(
+        to='Agency',
+        through='FavoriteAgency',
+        related_name='users_who_favor'
+    )
 
 
 class Post(models.Model):
@@ -47,6 +68,38 @@ class Post(models.Model):
             breadcrumb.insert(0, current)
             current = current.parent
         return breadcrumb
+
+
+class TopPost(models.Model):
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name='top_posts',
+        related_query_name='top_posts'
+    )
+
+
+class UserFavoriteCategory(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT
+    )
+
+    category = models.ForeignKey(
+        'Category',
+        on_delete=models.PROTECT
+    )
+
+
+class UserBookmark(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT
+    )
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.PROTECT
+    )
 
 
 class Tag(models.Model):
@@ -95,3 +148,15 @@ class Agency(models.Model):
 
     def get_absolute_url(self):
         return '%s?agency=%d' % (reverse('post-list-view'), self.id)
+
+
+class FavoriteAgency(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT
+    )
+
+    agency = models.ForeignKey(
+        Agency,
+        on_delete=models.PROTECT
+    )
