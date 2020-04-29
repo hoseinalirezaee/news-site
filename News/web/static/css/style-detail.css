@@ -44,6 +44,7 @@
 
 .border-radius {
     border-radius: 5px;
+    width: inherit;
 }
 
 .detail-news {
@@ -52,4 +53,10 @@
 
 .detail-news p {
     padding: 5px 20px;
+}
+
+.center-image {
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
 }

@@ -1,25 +1,38 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load get_dict_element %}
+{% load convert_date %}
 
 {% block main %}
-
-
-
     <link rel="stylesheet" href="{% static "css/style-detail.css" %} " type="text/css ">
-
     <div class="main-content"> <!-- main content -->
         <div class="container">
-            {% comment %}<div class="detail-head-pic position-relative">
-                <img src="{{ post.image }}" class="w-100">
-                <h1>{{ post.title }}</h1>
-            </div>{% endcomment %}
             <div class="main-detail">
                 <div class="container-fluid">
-                    <img src="{{ post.main_image }}" class="m-2 border-radius">
+                    <div class="row m-2">
+                        <div class="col-6">
+                            <p>{{ post.date_posted|convert_date }}</p>
+                            <p>{% for category in post.breadcrumb %} {{ category.title }} {% endfor %}</p>
+                            <h5 style="font-family: isans-bold,serif">{{ post.title }}</h5>
+                            <p>{{ post.summary }}</p>
+                        </div>
+                        <div class="col-6">
+                            <img src="{{ post.main_image }}" class="border-radius" alt="{{ post.title }}">
+                        </div>
+                    </div>
                     <div class="detail-news">
-                        <h2>{{ post.title }}</h2>
-                        body
-                        {#                        <p class="view-counter"><i class="fa fa-bullseye"></i> تعداد بازدید : {{ post.view_count }}</p>#}
+                        {% for paragraph in post.paragraphs %}
+                            {% with paragraph|get_dic_element:"body" as body %}
+                                {% if paragraph|get_dic_element:"type" == "text" %}
+                                    <p style="text-align: justify">{{ body }}</p>
+                                {% else %}
+                                    <img class="center-image" src="{{ body }}" alt="{{ post.title }}">
+                                {% endif %}
+                            {% endwith %}
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <a href="{{ post.origin_url }}" target="_blank">خواندن این خبر در سایت خبرگزاری</a>
                     </div>
                 </div>
             </div>
