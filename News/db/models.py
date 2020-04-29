@@ -138,7 +138,7 @@ class Category(models.Model):
 class Agency(models.Model):
     title = models.CharField(_('agency'), max_length=30)
     code = models.CharField(_('code'), max_length=25)
-    image = models.ImageField(_('agency image'), blank=True, null=True)
+    image = models.URLField(_('image'), max_length=1024, null=True, blank=True)
 
     class Meta:
         indexes = [Index(fields=['code'])]
