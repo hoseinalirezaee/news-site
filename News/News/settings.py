@@ -1,5 +1,7 @@
 import os
 
+from django.utils.translation import gettext_noop
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = 'hdzfox_u1#jsd^w%&aj!8)j2o$3mh-zz48v9v=i6e#r-lh+%sh'
@@ -88,7 +90,14 @@ DATABASES = {
 # ]
 
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fa'
+
+LOCALE_PATH = [os.path.join(BASE_DIR, 'web/locale')]
+
+LANGUAGES = [
+    ('fa', gettext_noop('Persian')),
+    ('en', gettext_noop('English'))
+]
 
 TIME_ZONE = 'UTC'
 
