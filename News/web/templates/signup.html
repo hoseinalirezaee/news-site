@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load form_utils %}
+
+{% block main %}
+    <div style="margin-inline: 500px; margin-block: 50px">
+        {% if form.errors %}
+            {{ form.errors }}
+        {% endif %}
+        <div class="form-group">
+            <form method="post" action="/signup/">
+                {% csrf_token %}
+                <P>
+                    <label for="id_username">نام کاربری</label>
+                    {{ form.username|add_attr:"class:form-control" }}
+                </P>
+                <p>
+                    <label for="id_password1">گذرواژه</label>
+                    {{ form.password1|add_attr:"class:form-control" }}
+                </p>
+                <p>
+                    <label for="id_password2">تأیید گذرواژه</label>
+                    {{ form.password2|add_attr:"class:form-control" }}
+                </p>
+
+                <input type="submit" class="btn btn-primary" value="ثبت‌نام">
+            </form>
+        </div>
+    </div>
+
+
+{% endblock %}
