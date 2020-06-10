@@ -2,3 +2,4 @@ from .auth import SignUpSuccessView, SignUpView, LoginView, LoginSuccessView, Lo
 from .detail import PostDetail
 from .filter import PostsListView
 from .index import Index
+from .profile import ProfileView

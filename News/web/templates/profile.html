@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <div class="main" style="margin-inline: 150px">
+        <div class="user-personal-info">
+            <div class="row">
+                <div class="col-6">
+                    <div>
+                        <form action="/profile/" method="post">
+                            {% csrf_token %}
+                            <label>نام</label>
+                            {{ form.first_name }}
+                            <label>نام خانوادگی</label>
+                            {{ form.last_name }}
+                            <label>ایمیل</label>
+                            {{ form.email }}
+                            <br>
+                            <label>خبرگزاری‌ها</label>
+                            {{ form.favorite_agencies }}
+                            <br>
+                            <label>دسته‌بندی‌ها</label>
+                            {{ form.favorite_categories }}
+
+                            <button type="submit">ذخیره</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
