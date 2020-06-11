@@ -1,4 +1,5 @@
 from .auth import SignUpSuccessView, SignUpView, LoginView, LoginSuccessView, LogoutView
+from .bookmarks import BookmarksListView, BookmarkDeleteView, AddToBookmarkView
 from .detail import PostDetail
 from .filter import PostsListView
 from .index import Index

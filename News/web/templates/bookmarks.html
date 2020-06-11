@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+
+{% block main %}
+    {% for bookmark in bookmarks %}
+        <p>{{ bookmark.post.title }} -
+        <form action="{{ bookmark.get_delete_url }}" method="post">{% csrf_token %}
+            <button type="submit">delete</button>
+        </form></p>
+    {% endfor %}
+{% endblock %}

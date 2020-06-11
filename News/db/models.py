@@ -69,6 +69,10 @@ class Post(models.Model):
             current = current.parent
         return breadcrumb
 
+    @property
+    def get_add_bookmark_url(self):
+        return reverse('bookmark-add', kwargs={'post_id': self.id})
+
 
 class TopPost(models.Model):
     post = models.ForeignKey(
@@ -100,6 +104,10 @@ class UserBookmark(models.Model):
         Post,
         on_delete=models.PROTECT
     )
+
+    @property
+    def get_delete_url(self):
+        return reverse('bookmark-delete', kwargs={'pk': self.id})
 
 
 class Tag(models.Model):

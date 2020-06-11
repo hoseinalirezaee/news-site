@@ -12,4 +12,7 @@ urlpatterns = [
     path('login/success/', views.LoginSuccessView.as_view(), name='login-success'),
     path('profile/', views.ProfileView.as_view(), name='profile'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
+    path('bookmarks/', views.BookmarksListView.as_view(), name='bookmarks'),
+    path('bookmarks/<int:pk>/', views.BookmarkDeleteView.as_view(), name='bookmark-delete'),
+    path('bookmarksAdd/<int:post_id>/', views.AddToBookmarkView.as_view(), name='bookmark-add')
 ]

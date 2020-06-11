@@ -13,6 +13,9 @@
                         <div class="col-6">
                             <p>{{ post.date_posted|convert_date }}</p>
                             <p>{% for category in post.breadcrumb %} {{ category.title }} {% endfor %}</p>
+                            <p>
+                                <button onclick="add_bookmark()">bookmark</button>
+                            </p>
                             <h5 style="font-family: isans-bold,serif">{{ post.title }}</h5>
                             <p>{{ post.summary }}</p>
                         </div>
@@ -38,4 +41,18 @@
             </div>
         </div><!-- end container -->
     </div> <!-- end main content -->
+
+    <script>
+        function add_bookmark() {
+            $.ajax(
+                '{{ bookmark_add_url }}',
+                {
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    }
+                }
+            )
+        }
+    </script>
 {% endblock %}
