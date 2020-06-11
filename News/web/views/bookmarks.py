@@ -13,7 +13,7 @@ from db import models
 
 
 class BookmarksListView(ListView):
-    paginate_by = 10
+    paginate_by = 5
     template_name = 'bookmarks.html'
     context_object_name = 'bookmarks'
 

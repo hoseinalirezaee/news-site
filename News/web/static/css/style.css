@@ -72,6 +72,15 @@ a:hover {
     box-shadow: #ccc 0px 0px 3px 1px;
 }
 
+#delete_btn {
+    border: none;
+    background-color: #31acbe;
+    color: #fefefe;
+    padding: 10px;
+    border-radius: 5px 5px 5px 5px;
+    cursor: auto;
+}
+
 .searchBox input {
     width: 100%;
     padding: 10px;
