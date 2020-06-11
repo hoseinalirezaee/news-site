@@ -90,7 +90,7 @@ DATABASES = {
 # ]
 
 
-LANGUAGE_CODE = 'fa'
+LANGUAGE_CODE = 'en'
 
 LOCALE_PATH = [os.path.join(BASE_DIR, 'web/locale')]
 
