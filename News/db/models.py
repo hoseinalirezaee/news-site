@@ -75,12 +75,11 @@ class Post(models.Model):
 
 
 class TopPost(models.Model):
-    post = models.ForeignKey(
+    post = models.OneToOneField(
         Post,
         on_delete=models.CASCADE,
         related_name='top_posts',
-        related_query_name='top_posts',
-        unique=True
+        related_query_name='top_posts'
     )
 
 
