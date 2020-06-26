@@ -79,7 +79,8 @@ class TopPost(models.Model):
         Post,
         on_delete=models.CASCADE,
         related_name='top_posts',
-        related_query_name='top_posts'
+        related_query_name='top_posts',
+        unique=True
     )
 
 
@@ -111,7 +112,12 @@ class UserBookmark(models.Model):
 
 
 class Tag(models.Model):
-    title = models.CharField(_('tag'), max_length=200)
+    title = models.CharField(_('tag'), max_length=200, unique=True)
+
+    class Meta:
+        indexes = [
+            Index(fields=('title',))
+        ]
 
     def __str__(self):
         return self.title
@@ -144,8 +150,8 @@ class Category(models.Model):
 
 
 class Agency(models.Model):
-    title = models.CharField(_('agency'), max_length=30)
-    code = models.CharField(_('code'), max_length=25)
+    title = models.CharField(_('agency'), max_length=30, unique=True)
+    code = models.CharField(_('code'), max_length=25, unique=True)
     image = models.URLField(_('image'), max_length=1024, null=True, blank=True)
 
     class Meta:
