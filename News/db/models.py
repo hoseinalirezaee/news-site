@@ -82,6 +82,8 @@ class TopPost(models.Model):
         related_query_name='top_posts'
     )
 
+    date_posted = models.DateTimeField(_('date posted'))
+
 
 class UserFavoriteCategory(models.Model):
     user = models.ForeignKey(
