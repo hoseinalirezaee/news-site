@@ -237,3 +237,29 @@ class AllNewsMixin:
 
         links = response.xpath(self.links_xpath).getall()
         return links
+
+
+class CrawlMixin:
+    links_xpath = None
+    follow_link = True
+
+    def parse(self, response):
+        links = response.xpath(self.links_xpath).getall()
+        for link in links:
+            kwargs = {
+                'url': link,
+                'callback': self.parse_page
+            }
+
+            if self.follow_link:
+                yield response.follow(**kwargs)
+            else:
+                yield Request(**kwargs)
+
+
+class TopNewsMixin:
+    def parse_page(self, response):
+        post = super().parse_page(response)
+        if post:
+            post['topPost'] = True
+        return post
