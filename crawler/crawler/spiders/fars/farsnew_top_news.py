@@ -1,15 +1,10 @@
 from .base import FarsBaseSpider
+from ..base import CrawlMixin, TopNewsMixin
 
 
-class FarsTopNews(FarsBaseSpider):
-    name = 'farsnews_top_news'
+class FarsTopNews(CrawlMixin, TopNewsMixin, FarsBaseSpider):
+    name = 'farsnews-top-news'
 
     start_urls = ['https://www.farsnews.ir/']
-
-    def parse(self, response):
-        links = response.xpath('//*[contains(@*, "top-news")]//a/@href').getall()
-        for link in links:
-            yield response.follow(
-                link,
-                callback=self.parse_page
-            )
+    links_xpath = '//*[contains(@*, "top-news")]//a/@href'
+    follow_link = True

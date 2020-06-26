@@ -1,15 +1,10 @@
 from .base import IrnaBaseSpider
+from ..base import TopNewsMixin, CrawlMixin
 
 
-class IrnaTopNews(IrnaBaseSpider):
-    name = 'irna_top_news'
+class IrnaTopNews(TopNewsMixin, CrawlMixin, IrnaBaseSpider):
+    name = 'irna-top-news'
 
     start_urls = ['https://www.irna.ir/rss-homepage']
-
-    def parse(self, response):
-        links = response.xpath('//item/link/text()').getall()
-        for link in links:
-            yield response.follow(
-                link,
-                callback=self.parse_page
-            )
+    follow_link = True
+    links_xpath = '//item/link/text()'

@@ -1,15 +1,10 @@
 from .base import TasnimBaseSpider
+from ..base import CrawlMixin, TopNewsMixin
 
 
-class TasnimTopNews(TasnimBaseSpider):
-    name = 'tasnim_top_news'
+class TasnimTopNews(CrawlMixin, TopNewsMixin, TasnimBaseSpider):
+    name = 'tasnim-top-news'
 
     start_urls = ['https://www.tasnimnews.com/']
-
-    def parse(self, response):
-        links = response.xpath('//*[@class="first"]//a/@href').getall()
-        for link in links:
-            yield response.follow(
-                link,
-                callback=self.parse_page
-            )
+    links_xpath = '//*[@class="first"]//a/@href'
+    follow_link = True

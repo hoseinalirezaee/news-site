@@ -1,14 +1,10 @@
 from .base import MehrBaseSpider
+from ..base import CrawlMixin, TopNewsMixin
 
 
-class MehrTopNews(MehrBaseSpider):
-    name = 'mehr_top_news'
+class MehrTopNews(CrawlMixin, TopNewsMixin, MehrBaseSpider):
+    name = 'mehr-top-news'
 
     start_urls = ['https://www.mehrnews.com/']
-
-    def parse(self, response):
-        links = response.xpath('((//*[@id="box1"])|(//*[@id="box2"]))//figure/a/@href').getall()
-        for link in links:
-            yield response.follow(
-                link, callback=self.parse_page
-            )
+    links_xpath = '((//*[@id="box1"])|(//*[@id="box2"]))//figure/a/@href'
+    follow_link = True

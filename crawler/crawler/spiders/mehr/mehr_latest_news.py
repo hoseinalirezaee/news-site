@@ -1,15 +1,10 @@
 from .base import MehrBaseSpider
+from ..base import CrawlMixin
 
 
-class MehrLatestNews(MehrBaseSpider):
-    name = 'mehr_latest_news'
+class MehrLatestNews(CrawlMixin, MehrBaseSpider):
+    name = 'mehr-latest-news'
 
     start_urls = ['https://www.mehrnews.com/rss']
-
-    def parse(self, response):
-        links = response.xpath('//item/link/text()').getall()
-        for link in links:
-            yield response.follow(
-                link,
-                callback=self.parse_page
-            )
+    links_xpath = '//item/link/text()'
+    follow_link = True

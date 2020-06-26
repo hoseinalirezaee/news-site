@@ -1,15 +1,10 @@
 from .base import IsnaBaseSpider
+from ..base import CrawlMixin
 
 
-class IsnaLatestNews(IsnaBaseSpider):
-    name = 'isna_latest_news'
+class IsnaLatestNews(CrawlMixin, IsnaBaseSpider):
+    name = 'isna-latest-news'
 
     start_urls = ['https://www.isna.ir/rss']
-
-    def parse(self, response):
-        links = response.xpath('//item/link/text()').getall()
-        for link in links:
-            yield response.follow(
-                link,
-                callback=self.parse_page
-            )
+    links_xpath = '//item/link/text()'
+    follow_link = True
