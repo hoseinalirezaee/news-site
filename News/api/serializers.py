@@ -16,6 +16,7 @@ class PostSerializer(serializers.Serializer):
     tags = serializers.ListField(child=serializers.CharField(), allow_null=True, required=False)
     agencyTitle = serializers.CharField(max_length=100, allow_null=False, required=True)
     agencyCode = serializers.CharField(max_length=100, allow_null=False, required=True)
+    topPost = serializers.BooleanField(required=True)
 
     def create(self, validated_data):
         category = models.Category.objects.get(
@@ -51,4 +52,13 @@ class PostSerializer(serializers.Serializer):
                 ignore_conflicts=True
             )
             post.save()
+
+        if validated_data['topPost'] is True:
+            models.TopPost.objects.get_or_create(
+                post=post,
+                date_posted=post.date_posted
+            )
+            last_top_news = models.TopPost.objects.order_by('-date_posted')[:10]
+            models.TopPost.objects.exclude(id__in=last_top_news).delete()
+
         return post
