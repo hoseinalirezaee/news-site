@@ -15,8 +15,12 @@ class Index(generic.TemplateView):
         context['last_news_with_category'] = self.get_last_news_with_category()
         top_news = self.get_top_news()
         top_news_count = top_news.count()
-        context['top_new_left'] = top_news[top_news_count - 2:top_news_count]
-        context['top_news_slider'] = top_news.exclude(id__in=context['top_new_left'])
+        try:
+            context['top_new_left'] = top_news[top_news_count - 2:top_news_count]
+        except AssertionError:
+            pass
+        if 'top_new_left' in context:
+            context['top_news_slider'] = top_news.exclude(id__in=context['top_new_left'])
         if self.request.user.is_authenticated:
             agencies = self.request.user.favorite_agencies.all()
             cats = self.request.user.favorite_categories.all()
@@ -52,5 +56,5 @@ class Index(generic.TemplateView):
         return last_news
 
     def get_top_news(self):
-        posts = models.TopPost.objects.all().order_by('-post__date_posted')
+        posts = models.TopPost.objects.all().order_by('-date_posted')
         return posts
