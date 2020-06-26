@@ -1,22 +1,22 @@
 AGENCIES = {
     'farsnews': {
         'title': 'خبرگزاری فارس',
-        'image': 'img/fars.png'
+        'image': 'statics/img/fars.png'
     },
     'irna': {
         'title': 'خبرگزاری ایرنا',
-        'image': 'img/iran.png'
+        'image': 'statics/img/iran.png'
     },
     'isna': {
         'title': 'خبرگزاری ایسنا',
-        'image': 'img/isna.png'
+        'image': 'statics/img/isna.png'
     },
     'mehrnews': {
         'title': 'خبرگزاری مهر',
-        'image': 'img/mehr.jpg'
+        'image': 'statics/img/mehr.jpg'
     },
     'tasnimnews': {
         'title': 'خبرگزاری تسنیم',
-        'image': 'img/tasnim.png'
+        'image': 'statics/img/tasnim.png'
     }
 }
