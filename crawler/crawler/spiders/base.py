@@ -49,6 +49,7 @@ class ParsePageMixin:
         data['paragraphs'] = self.get_paragraphs(response)
         data['agencyCode'] = self.agency_code
         data['agencyTitle'] = self.agency_title
+        data['topPost'] = False
 
         return data
 
