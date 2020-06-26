@@ -1,4 +1,3 @@
-from django.db import IntegrityError
 from rest_framework import serializers
 
 from db import models
@@ -23,8 +22,7 @@ class PostSerializer(serializers.Serializer):
             title=map_category(validated_data['category'])
         )
 
-        agency, created = models.Agency.objects.get_or_create(
-            title=validated_data['agencyTitle'],
+        agency = models.Agency.objects.get(
             code=validated_data['agencyCode']
         )
 
@@ -39,23 +37,18 @@ class PostSerializer(serializers.Serializer):
                 'category': category,
                 'agency': agency
             }
-
         )
 
         if created:
             post.paragraphs = validated_data['paragraphs']
-
-            for tag in validated_data['tags']:
-                tag, created = models.Tag.objects.get_or_create(
-                    title=tag
-                )
-                try:
-                    models.PostTag.objects.create(
-                        post=post,
-                        tag=tag
-                    )
-                except IntegrityError:
-                    pass
-
-        post.save()
+            models.Tag.objects.bulk_create(
+                [models.Tag(title=tag) for tag in validated_data['tags']],
+                ignore_conflicts=True
+            )
+            tags = models.Tag.objects.in_bulk(validated_data['tags'], field_name='title')
+            models.PostTag.objects.bulk_create(
+                [models.PostTag(tag=tag, post=post) for tag in tags.values()],
+                ignore_conflicts=True
+            )
+            post.save()
         return post
