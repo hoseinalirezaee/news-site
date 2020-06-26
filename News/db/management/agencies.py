@@ -5,7 +5,7 @@ AGENCIES = {
     },
     'irna': {
         'title': 'خبرگزاری ایرنا',
-        'image': 'statics/img/iran.png'
+        'image': 'statics/img/irna.png'
     },
     'isna': {
         'title': 'خبرگزاری ایسنا',
