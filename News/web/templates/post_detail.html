@@ -13,9 +13,12 @@
                         <div class="col-6">
                             <p>{{ post.date_posted|convert_date }}</p>
                             <p>{% for category in post.breadcrumb %} {{ category.title }} {% endfor %}</p>
-                            <p>
-                                <button onclick="add_bookmark()">bookmark</button>
-                            </p>
+                            {% if user.is_authenticated %}
+                                <p>
+                                    <button onclick="add_bookmark()">bookmark</button>
+                                </p>
+                            {% endif %}
+
                             <h5 style="font-family: isans-bold,serif">{{ post.title }}</h5>
                             <p>{{ post.summary }}</p>
                         </div>
