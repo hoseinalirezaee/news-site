@@ -4,6 +4,7 @@ import os
 from django.core.management import BaseCommand
 
 from db import models
+from db.management.agencies import AGENCIES
 
 
 class Command(BaseCommand):
@@ -25,3 +26,9 @@ class Command(BaseCommand):
                     if created:
                         sub.parent = root
                     sub.save()
+            for agency, info in AGENCIES.items():
+                models.Agency.objects.create(
+                    code=agency,
+                    title=info['title'],
+                    image=info['image']
+                )
