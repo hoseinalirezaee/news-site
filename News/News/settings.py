@@ -4,11 +4,11 @@ from django.utils.translation import gettext_noop
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = 'hdzfox_u1#jsd^w%&aj!8)j2o$3mh-zz48v9v=i6e#r-lh+%sh'
+SECRET_KEY = 'ReplaceThisValueWithYourVERYstrongSECRetKEy'
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'db.User'
 
@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     'db',
     'api',
     'web',
@@ -62,32 +63,17 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },
     'default': {
-        'NAME': 'django_postgres',
+        'NAME': 'news',
         'ENGINE': 'django.db.backends.postgresql',
-        'USER': 'root',
-        'PASSWORD': '1',
-        'HOST': '127.0.0.1',
-        'PORT': 12000
+        'USER': os.environ.get('DATABASE_USER'),
+        'PASSWORD': os.environ.get('DATABASE_PASS'),
+        'HOST': os.environ.get('DATABASE_HOST'),
+        'PORT': int(os.environ.get('DATABASE_PORT')),
+        'OPTIONS': {
+            'connect_timeout': 10
+        }
     }
 }
-
-# Password validation
-# https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
-
-# AUTH_PASSWORD_VALIDATORS = [
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-#     },
-# ]
 
 
 LANGUAGE_CODE = 'en'
@@ -107,8 +93,5 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_URL = '/static/'
+STATIC_URL = '/statics/'
 STATIC_ROOT = 'statics/'
-
-MEDIA_ROOT = '/home/hosein/Documents/NewsSite/News/web/static/'
-MEDIA_URL = 'http://localhost:8000/static/'
