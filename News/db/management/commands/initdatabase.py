@@ -27,8 +27,10 @@ class Command(BaseCommand):
                         sub.parent = root
                     sub.save()
             for agency, info in AGENCIES.items():
-                models.Agency.objects.create(
+                models.Agency.objects.get_or_create(
                     code=agency,
-                    title=info['title'],
-                    image=info['image']
+                    defaults={
+                        'title': info['title'],
+                        'image': info['image']
+                    }
                 )
