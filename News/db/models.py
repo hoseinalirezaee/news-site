@@ -123,6 +123,9 @@ class Tag(models.Model):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return reverse('tag-view', args=(self.title,))
+
 
 class PostTag(models.Model):
     post = models.ForeignKey(to=Post, on_delete=models.PROTECT)
