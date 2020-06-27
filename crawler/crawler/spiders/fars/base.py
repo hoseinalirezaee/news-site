@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from scrapy import Spider
 
 from ..base import ParsePageMixin
@@ -6,7 +7,6 @@ from ..base import ParsePageMixin
 class FarsBaseSpider(ParsePageMixin, Spider):
     website_url = 'https://farsnews.ir'
     title_xpath = '//div[contains(@class, "news-box")]//span[contains(@class, "title")]/text()'
-    summary_xpath = '//div[contains(@class, "news-box")]//p[contains(@class, "lead")]/text()'
     main_image_xpath = '//div[contains(@class, "news-box")]//div[@class="top"]/img/@src'
     tags_xpath = '//div[contains(@class, "news-box")]//div[contains(@class, "tags")]/a/text()'
     post_id_xpath = '//meta[@name="Fna.oid"]/@content'
@@ -20,3 +20,12 @@ class FarsBaseSpider(ParsePageMixin, Spider):
     paragraphs_selector_xpath = '//div[contains(@class, "nt-body")]/p'
     agency_code = 'farsnews'
     agency_title = 'خبرگزاری فارس'
+
+    def get_summary(self, response):
+        summary = response.xpath('(//div[contains(@class, "news-box")]//p[contains(@class, "lead")])[1]').get()
+        bs = BeautifulSoup(summary, features='lxml')
+        summary = bs.text
+        if summary:
+            summary = summary.strip()
+
+        return summary
