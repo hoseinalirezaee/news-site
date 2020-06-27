@@ -36,7 +36,7 @@
                                     </a>
                                     <div class="news-reporter">
                                         <a href="{{ post.post.agency.get_absolute_url }}">
-                                            <img src="{{ post.post.agency.image }}" alt="{{ post.post.title }}">
+                                            <img src="{% static post.post.agency.image %}" alt="{{ post.post.title }}">
                                             <small>{{ post.post.agency.title }}</small></a>
                                     </div>
                                 </div>
@@ -67,7 +67,7 @@
                                                     class="card-text">{{ post.title }}</p></a>
                                             <div class=" card-text news-reporter">
                                                 <a href="{{ post.agency.get_absolute_url }}"> <img
-                                                        src="{{ post.agency.image }}">
+                                                        src="{% static post.agency.image %}">
                                                     <small>{{ post.agency.title }}</small></a>
                                             </div>
                                         </div>
@@ -103,7 +103,7 @@
                                                         class="card-text">{{ post.title }}</p></a>
                                                 <div class=" card-text news-reporter">
                                                     <a href="{{ post.agency.get_absolute_url }}"> <img
-                                                            src="{{ post.agency.image }}">
+                                                            src="{% static post.agency.image %}">
                                                         <small>{{ post.agency.title }}</small></a>
                                                 </div>
                                             </div>
@@ -150,7 +150,7 @@
                                                 <div class=" card-text news-reporter">
                                                     <a href="{{ post.agency.get_absolute_url }}" class="d-flex p-1">
                                                         <img
-                                                                src="{{ post.agency.image }}">
+                                                                src="{% static post.agency.image %}">
                                                         <small>{{ post.agency.title }}</small></a>
                                                 </div>
                                             </div>
@@ -175,7 +175,7 @@
                                                     <div class=" card-text news-reporter">
                                                         <a href="{{ post.agency.get_absolute_url }}" class="d-flex">
                                                             <img
-                                                                    src="{{ post.agency.image }}">
+                                                                    src="{% static post.agency.image %}">
                                                             <small>{{ post.agency.title }}</small></a>
                                                     </div>
                                                 </div>
@@ -192,7 +192,7 @@
                                             <a href="{{ post.get_absolute_url }}"> <small>{{ post.title }}</small></a>
                                             <div class="news-reporter">
                                                 <a href="{{ post.agency.get_absolute_url }}"><img
-                                                        src="{{ post.agency.image }}"></a>
+                                                        src="{% static post.agency.image %}"></a>
                                             </div>
                                         </div>
                                     {% endfor %}
