@@ -1,6 +1,14 @@
 #!/bin/bash
 
-echo "Hello"
+#blocks until database is available on specified port
+while true; do
+    TEMP=$(nc -vzw1 "$DATABASE_HOST" "$DATABASE_PORT" 2>&1)
+    if [[ "$TEMP" == *"open"* ]]; then
+        break
+    fi
+    sleep 1
+done
+
 python manage.py collectstatic --no-input
 python manage.py migrate --no-input --skip-checks
 python manage.py createsuperuser --username $DJANGO_SUPERUSER_USERNAME --email no@no.com --no-input

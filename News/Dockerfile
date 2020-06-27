@@ -2,7 +2,8 @@ FROM python:3.8
 
 WORKDIR /app
 COPY ./requirements.txt /app
-RUN pip --timeout=1000 install pip --upgrade --disable-pip-version-check && \
+RUN apt-get update && apt-get install -y netcat && \
+    pip --timeout=1000 install pip --upgrade --disable-pip-version-check && \
     pip --timeout=1000 install -r requirements.txt --disable-pip-version-check
 
 VOLUME /app/statics
