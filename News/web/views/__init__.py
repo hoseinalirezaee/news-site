@@ -4,3 +4,4 @@ from .detail import PostDetail
 from .filter import PostsListView
 from .index import Index
 from .profile import ProfileView
+from .tags import TagsListView
