@@ -1,24 +1,27 @@
 {% extends "base.html" %}
 
 {% block main %}
-    <div>
-        <form method="GET">
-            {{ filter_set.form }}
-            <input type="submit" value="جست‌وجو">
-        </form>
-    </div>
-    <div class="row">
-        {% for post in posts %}
-            <div class="col-6 my-2">
-                <div class="card mx-1">
-                    <div class="row no-gutters">
-                        <div id="card-image" class="col-2">
-                            <a href="{{ post.get_absolute_url }}">
-                                <img src="{{ post.main_image }}" class="card-img w-100" alt="">
-                            </a>
-                        </div>
-                        <div class="col-7 position-relative">
-                            <div class="card-body">
+    <div class="container" style="min-height: 400px">
+        <div class="row container pl-4 my-2" style="margin-right: 50%;transform: translateX(50%);">
+            <form method="GET">
+                {{ filter_set.form }}
+                <input type="submit" value="جست‌وجو">
+            </form>
+        </div>
+        <hr>
+        <div class="row container" style="margin-right: 50%;transform: translateX(50%);">
+            {% if posts %}
+                {% for post in posts %}
+                    <div class="col-6 my-2">
+                        <div class="card mx-1">
+                            <div class="row no-gutters">
+                                <div id="card-image" class="col-2">
+                                    <a href="{{ post.get_absolute_url }}">
+                                        <img src="{{ post.main_image }}" class="card-img w-100" alt="">
+                                    </a>
+                                </div>
+                                <div class="col-7 position-relative">
+                                    <div class="card-body">
                                 <a href="{{ post.get_absolute_url }}">
                                     <p class="card-text"
                                        style="font-family: isans-bold,serif; font-size: 14px">{{ post.title }}</p>
@@ -30,22 +33,30 @@
                                         <small>{{ post.agency.title }}</small>
                                     </a>
                                 </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                {% endfor %}
+            {% else %}
+                <div style="margin-right: 50%;transform: translateX(50%)">
+                    <p class="border-radius p-3 bg-warning d-flex justify-content-center">مطلبی وجود ندارد!</p>
                 </div>
-            </div>
-        {% endfor %}
-    </div>
 
-    {% if is_paginated %}
-        <div class="row">
-            <div class="col-12 ">
-                <div class="pagination d-block text-center p-4">
+            {% endif %}
+
+        </div>
+
+        {% if is_paginated %}
+            <div class="row">
+                <div class="col-12 ">
+                    <div class="pagination d-block text-center p-4">
                     <span class="page-links ">
 
                         {% if page_obj.has_next %}
                             <a href="?page=
+
                                     {{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"><i
                                     class="fa fa-arrow-alt-circle-right"></i></a>
                         {% endif %}
@@ -54,12 +65,15 @@
                         </span>
                         {% if page_obj.has_previous %}
                             <a href="?page=
+
                                     {{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"><i
                                     class="fa fa-arrow-alt-circle-left"></i></a>
                         {% endif %}
                     </span>
+                    </div>
                 </div>
             </div>
-        </div>
-    {% endif %}
+        {% endif %}
+    </div>
+
 {% endblock %}

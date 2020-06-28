@@ -6,13 +6,14 @@
 {% block main %}
     <div class="main-content">
         <div class="container">
-            <div class="row"> <!-- 1st row with carousel -->
+            <div class="row my-carousel"> <!-- 1st row with carousel -->
                 <div class="col-lg-8">
-                    <div class="owl-carousel main-carousel">
+                    <div class="owl-carousel main-carousel" style="height: 500px">
                         {% for post in top_news_slider %}
                             <a href="{{ post.post.get_absolute_url }}">
                                 <div class="item position-relative">
-                                    <img src="{{ post.post.main_image }}" class="w-100" alt="{{ post.post.title }}">
+                                    <img src="{{ post.post.main_image }}" style="height: 500px; width: 862px"
+                                         alt="{{ post.post.title }}">
                                     <div class="carousel-caption">
                                         {{ post.post.title }}
                                     </div>
@@ -125,11 +126,18 @@
                         </a>
                         <i class="fa fa-caret-left"></i>
                     </p>
-                    <div class="owl-rtl owl-carousel menu-carousel">
-                        {% for cat in sub_categories %}
-                            <a href="{{ cat.get_absolute_url }}">{{ cat.title }}</a>
-                        {% endfor %}
+
+                    <div class="scndHeader container" style="width: 50%">
+                        <div class="owl-rtl owl-carousel menu-carousel">
+                            {% for cat in sub_categories %}
+                                <a href="{{ cat.get_absolute_url }}">{{ cat.title }}</a>
+                            {% endfor %}
+                        </div>
+                        <div class="ad-1">
+
+                        </div>
                     </div>
+
                     <div class="full-line red"></div>
                 </div>
                 <div class="owl-carousel section-carousel p-3">

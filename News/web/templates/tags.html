@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 
 {% block main %}
-    <p>{{ tag }}</p>
-    <div class="row">
+
+    <p class="pl-4 my-2 border-radius bg-info p-2 d-inline-block"
+       style="margin-right: 50%;transform: translateX(50%);color: white"># {{ tag }}</p>
+    <div class="row container" style="margin-right: 50%;transform: translateX(50%);">
+
         {% for post in posts %}
             <div class="col-6 my-2">
                 <div class="card mx-1">

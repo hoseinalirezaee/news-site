@@ -5,28 +5,43 @@
         <div class="user-personal-info">
             <div class="row">
                 <div class="col-6">
-                    <div>
+                    <div class="edit-info">
                         <form action="/profile/" method="post">
                             {% csrf_token %}
                             <label>نام</label>
-                            {{ form.first_name }}
+                            <div>
+                                {{ form.first_name }}
+                            </div>
                             <label>نام خانوادگی</label>
-                            {{ form.last_name }}
-                            <label>ایمیل</label>
-                            {{ form.email }}
-                            <br>
-                            <label>خبرگزاری‌ها</label>
-                            {{ form.favorite_agencies }}
-                            <br>
-                            <label>دسته‌بندی‌ها</label>
-                            {{ form.favorite_categories }}
+                            <div>
+                                {{ form.last_name }}
+                            </div>
 
-                            <button type="submit">ذخیره</button>
+                            <label>ایمیل</label>
+                            <div>
+                                {{ form.email }}
+                            </div>
+                            <div class="d-flex">
+                                <div class=" w-50">
+
+                                    <label>خبرگزاری‌ها</label>
+                                    <div>
+                                        {{ form.favorite_agencies }}
+                                    </div>
+                                </div>
+
+                                <div class=" w-50">
+                                    <label>دسته‌بندی‌ها</label>
+                                    <div>
+                                        {{ form.favorite_categories }}
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary border-radius p-3" type="submit">ذخیره</button>
                         </form>
                     </div>
-                    <div>
+                    <div class="btn btn-warning border-radius p-3 my-3">
                         <a href="/bookmarks/">خبرهای نشانه‌گذاری شده</a>
-
                     </div>
                 </div>
             </div>

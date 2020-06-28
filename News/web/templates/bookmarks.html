@@ -2,9 +2,9 @@
 
 
 {% block main %}
-
-    <div class="row">
-        {% for bookmark in bookmarks %}
+    <div class="container" style="min-height: 400px">
+        <div class="row">
+            {% for bookmark in bookmarks %}
             {% with bookmark.post as post %}
                 <div class="col-12 my-2">
                     <div class="card mx-1">
@@ -29,10 +29,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div style="display: inline-block">
+                            <div class="d-flex align-items-center" style="display: inline-block">
                                 <form action="{{ bookmark.get_delete_url }}" method="post">
                                     {% csrf_token %}
-                                    <button id="delete_btn" type="submit">حذف</button>
+                                    <button id="delete_btn" class="btn btn-danger" type="submit"
+                                            style="cursor: pointer">حذف
+                                    </button>
                                 </form>
                             </div>
                         </div>
@@ -40,9 +42,9 @@
                 </div>
             {% endwith %}
         {% endfor %}
-    </div>
-    <div>
-        {% if is_paginated %}
+        </div>
+        <div>
+            {% if is_paginated %}
             <div class="row">
                 <div class="col-12 ">
                     <div class="pagination d-block text-center p-4">
@@ -64,5 +66,7 @@
                 </div>
             </div>
         {% endif %}
+        </div>
     </div>
+
 {% endblock %}

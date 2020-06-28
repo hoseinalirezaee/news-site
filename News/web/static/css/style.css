@@ -546,3 +546,22 @@ footer p {
 #id_password1, #id_password2, #id_password, #id_username {
     text-align: left;
 }
+
+.my-carousel .owl-item {
+    width: 862px;
+}
+
+.edit-info div {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+}
+
+.edit-info div input {
+    width: 100%;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px 2px #ccc;
+}
