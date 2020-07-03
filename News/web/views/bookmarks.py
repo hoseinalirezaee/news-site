@@ -53,6 +53,12 @@ class AddBookmarkSerializer(serializers.ModelSerializer):
         ]
 
 
+class DeleteBookmarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.UserBookmark
+        fields = ['user', 'post']
+
+
 class AddToBookmarkView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.SessionAuthentication]
@@ -67,3 +73,27 @@ class AddToBookmarkView(APIView):
             return response.Response({'message': 'ok'}, status=200)
         else:
             return response.Response({'message': 'error'}, status=409)
+
+    def delete(self, request, post_id):
+        post = models.Post.objects.get(id=post_id)
+        user = self.request.user
+
+        serializer = DeleteBookmarkSerializer(data={'user': user.id, 'post': post.id})
+        if serializer.is_valid():
+            models.UserBookmark.objects.filter(user=user, post=post).delete()
+            return response.Response({'message': 'ok'}, status=200)
+        else:
+            return response.Response({'message': 'error'}, status=409)
+
+    def get(self, request, post_id):
+        post = models.Post.objects.get(id=post_id)
+        user = self.request.user
+        if models.UserBookmark.objects.filter(user=user, post=post).exists():
+            return response.Response(
+                {'message': 'Found.'}
+            )
+        else:
+            return response.Response(
+                {'message': 'Not found.'},
+                status=404
+            )

@@ -18,7 +18,8 @@
                             <p><img src="{% static post.agency.image %}" style="width: 30px"> {{ post.agency.title }}
                             </p>
                             {% if user.is_authenticated %}
-                                <i class="fa fa-bookmark" style="cursor: pointer" onclick="add_bookmark()"></i>
+                                <i id="bookmark_btn" class="fa fa-bookmark" style="cursor: pointer"
+                                   onclick="add_bookmark()"></i>
                             {% endif %}
 
                             <h5 style="font-family: isans-bold,serif">{{ post.title }}</h5>
@@ -53,18 +54,67 @@
             </div>
         </div><!-- end container -->
     </div> <!-- end main content -->
-
+    <script src="{% static "js/jquery.min.js" %}"></script>
     <script>
-        function add_bookmark() {
-            $.ajax(
-                '{{ bookmark_add_url }}',
-                {
-                    type: 'POST',
-                    data: {
-                        'csrfmiddlewaretoken': '{{ csrf_token }}'
-                    }
+        bookmark_btn = document.getElementById('bookmark_btn');
+        {% if user.is_authenticated %}
+            $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", "{{csrftoken}}");
                 }
+            });
+
+
+            $(document).ready(
+                $.ajax(
+                    '{{ bookmark_add_url }}',
+                    {
+                        type: 'GET',
+                        statusCode: {
+                            200: function () {
+                                bookmark_btn.style['color'] = "yellowgreen";
+                            },
+                            404: function () {
+                                bookmark_btn.style['color'] = "black";
+                            }
+                        }
+                    }
+                )
             )
+
+        {% endif %}
+
+
+        function add_bookmark() {
+
+            if (bookmark_btn.style['color'] !== "yellowgreen") {
+                $.ajax(
+                    '{{ bookmark_add_url }}',
+                    {
+                        type: 'POST',
+                        data: {
+                            'csrfmiddlewaretoken': '{{ csrf_token }}'
+                        },
+                        success: function (data, status, xhr) {
+                            bookmark_btn.style["color"] = "yellowgreen";
+                        }
+                    }
+                )
+            } else {
+                $.ajax(
+                    '{{ bookmark_add_url }}',
+                    {
+                        type: 'DELETE',
+                        headers: {
+                            "X-CSRFToken": '{{ csrf_token }}'
+                        },
+                        success: function (data) {
+                            bookmark_btn.style["color"] = "black";
+                        }
+                    }
+                )
+            }
+
         }
     </script>
 {% endblock %}
