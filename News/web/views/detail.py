@@ -13,5 +13,5 @@ class PostDetail(DetailView):
         context = super().get_context_data(**kwargs)
         post = self.get_object()
         request: HttpRequest = self.request
-        context['bookmark_add_url'] = request.build_absolute_uri(post.get_add_bookmark_url)
+        context['bookmark_add_url'] = post.get_add_bookmark_url
         return context
