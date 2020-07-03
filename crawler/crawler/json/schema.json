@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "postUrl": {
+      "type": "string"
+    },
+    "summary": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "mainImage": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "category": {
+      "type": "string"
+    },
+    "publishedDate": {
+      "type": "string"
+    },
+    "postId": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "agencyCode": {
+      "type": "string"
+    },
+    "agencyTitle": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "topPost": {
+      "type": "boolean"
+    },
+    "paragraphs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "body"
+        ]
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "title",
+    "postUrl",
+    "category",
+    "publishedDate",
+    "paragraphs",
+    "tags",
+    "agencyCode",
+    "agencyTitle",
+    "topPost"
+  ]
+}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+    <div class="container" style="min-height: 400px">
+        <div class="row container pl-4 my-2" style="margin-right: 50%;transform: translateX(50%);">
+            <form method="GET">
+                {{ filter_set.form }}
+                <input type="submit" value="جست‌وجو">
+            </form>
+        </div>
+        <hr>
+        <div class="row container" style="margin-right: 50%;transform: translateX(50%);">
+            {% if posts %}
+                {% for post in posts %}
+                    <div class="col-6 my-2">
+                        <div class="card mx-1">
+                            <div class="row no-gutters">
+                                <div id="card-image" class="col-2">
+                                    <a href="{{ post.get_absolute_url }}">
+                                        <img src="{{ post.main_image }}" class="card-img w-100" alt="">
+                                    </a>
+                                </div>
+                                <div class="col-7 position-relative">
+                                    <div class="card-body">
+                                        <a href="{{ post.get_absolute_url }}">
+                                            <p class="card-text"
+                                               style="font-family: isans-bold,serif; font-size: 14px">{{ post.title }}</p>
+                                        </a>
+                                        <p>{{ post.summary }}</p>
+                                        <div class=" card-text news-reporter">
+                                            <a href="{{ post.agency.get_absolute_url }}">
+                                                <img src="{% static post.agency.image %}" alt="">
+                                                <small>{{ post.agency.title }}</small>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div style="margin-right: 50%;transform: translateX(50%)">
+                    <p class="border-radius p-3 bg-warning d-flex justify-content-center">مطلبی وجود ندارد!</p>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+        {% if is_paginated %}
+            <div class="row">
+                <div class="col-12 ">
+                    <div class="pagination d-block text-center p-4">
+                    <span class="page-links ">
+
+                        {% if page_obj.has_next %}
+                            <a href="?page=
+
+                                    {{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"><i
+                                    class="fa fa-arrow-alt-circle-right"></i></a>
+                        {% endif %}
+                        <span class="page-current">
+                             صفحه  {{ page_obj.number }} از {{ page_obj.paginator.num_pages }}
+                        </span>
+                        {% if page_obj.has_previous %}
+                            <a href="?page=
+
+                                    {{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"><i
+                                    class="fa fa-arrow-alt-circle-left"></i></a>
+                        {% endif %}
+                    </span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

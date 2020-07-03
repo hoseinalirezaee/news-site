@@ -1,0 +1,10 @@
+* * * * * cd /app && /usr/local/bin/scrapy crawl isna-latest-news
+* * * * * cd /app && /usr/local/bin/scrapy crawl isna-top-news
+* * * * * cd /app && /usr/local/bin/scrapy crawl farsnews-latest-news
+* * * * * cd /app && /usr/local/bin/scrapy crawl farsnews-news-news
+* * * * * cd /app && /usr/local/bin/scrapy crawl irna-latest-news
+* * * * * cd /app && /usr/local/bin/scrapy crawl irna-top-news
+* * * * * cd /app && /usr/local/bin/scrapy crawl mehr-latest-news
+* * * * * cd /app && /usr/local/bin/scrapy crawl mehr-top-news
+* * * * * cd /app && /usr/local/bin/scrapy crawl tasnim-latest-news
+* * * * * cd /app && /usr/local/bin/scrapy crawl tasnim-top-news

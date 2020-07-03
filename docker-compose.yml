@@ -1,0 +1,48 @@
+version: "3.7"
+
+services:
+  web:
+    build: ./News
+    volumes:
+      - type: volume
+        source: statics
+        target: /app/statics
+    depends_on:
+      - postgres
+    environment:
+      DJANGO_SUPERUSER_PASSWORD: 1
+      DJANGO_SUPERUSER_USERNAME: hosein
+      DATABASE_USER: root
+      DATABASE_PASS: 1
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+
+  nginx:
+    build: ./Nginx
+    volumes:
+      - type: volume
+        source: statics
+        target: /var/statics
+    ports:
+      - '127.0.0.1:8000:80'
+    depends_on:
+      - web
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: 1
+      POSTGRES_USER: root
+      POSTGRES_DB: news
+
+  crawler:
+    build: ./crawler
+    environment:
+      API_URL: http://web:8000/api/posts/
+      API_USER: hosein
+      API_PASS: 1
+    depends_on:
+      - web
+
+volumes:
+  statics:
