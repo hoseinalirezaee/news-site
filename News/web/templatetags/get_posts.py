@@ -20,7 +20,7 @@ def get_posts(category):
 
     data = []
 
-    if queryset.count() < 8:
+    if queryset.count() < 10:
         for post in queryset:
             data.append(
                 {
