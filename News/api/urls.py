@@ -1,7 +1,7 @@
-from django.urls import path
+from django.urls import path, include
 
-from News.api.views import news_interface
+app_name = 'app_api'
 
 urlpatterns = [
-    path('posts/', news_interface),
+    path('interface/', include('interface.urls')),
 ]

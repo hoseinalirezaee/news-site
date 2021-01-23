@@ -21,7 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'db',
-    'api',
+    'interface',
     'web',
     'rest_framework'
 ]

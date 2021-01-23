@@ -17,7 +17,7 @@ ITEM_PIPELINES = {
 
 FEED_EXPORT_ENCODING = 'utf-8'
 
-API_URL = 'http://web:8000/api/posts/'
+API_URL = 'http://web:8000/api/interface/posts/'
 
 user_pass = '%s:%s' % ('username', 'password')
 user_pass = user_pass.encode('utf-8')
