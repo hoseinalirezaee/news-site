@@ -42,7 +42,7 @@ services:
   crawler:
     build: ./crawler
     environment:
-      API_URL: http://web:8000/api/posts/
+      API_URL: http://web:8000/api/interface/posts/
       API_USER: username
       API_PASS: password
     depends_on:
