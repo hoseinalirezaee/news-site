@@ -11,16 +11,12 @@ choices = [1, 3, 5]
 
 @register.filter
 def get_posts(category):
-    if category.parent is None:
-        queryset = models.Post.objects.all().filter(category__in=category.sub_categories.all())
-    else:
-        queryset = category.posts
-
-    queryset.order_by('-date_posted')
+    queryset = models.Post.objects.all().filter(
+        category__in=category.sub_categories.all()) if not category.parent else category.posts
 
     data = []
 
-    if queryset.count() < 8:
+    if len(queryset) < 8:
         for post in queryset:
             data.append(
                 {
@@ -28,31 +24,36 @@ def get_posts(category):
                     'items': post
                 }
             )
-        return data
+    else:
+        start_index = 1
 
-    start_index = 1
-
-    data.append(
-        {
-            'type': 1,
-            'items': queryset[0]
-        }
-    )
-
-    for _ in range(2):
-        type_number = random.choice(choices)
         data.append(
             {
-                'type': type_number,
-                'items': queryset[start_index: start_index + type_number] if type_number != 1 else queryset[start_index]
+                'type': 1,
+                'items': queryset[0]
             }
         )
-        start_index += type_number
-    data.append(
-        {
-            'type': 1,
-            'items': queryset[start_index]
-        }
-    )
+
+        for _ in range(2):
+            type_number = random.choice(choices)
+
+            if start_index >= len(queryset) or start_index + type_number >= len(queryset):
+                break
+
+            data.append(
+                {
+                    'type': type_number,
+                    'items': queryset[start_index: start_index + type_number] if type_number != 1 else queryset[
+                        start_index]
+                }
+            )
+            start_index += type_number
+
+        data.append(
+            {
+                'type': 1,
+                'items': queryset[start_index]
+            }
+        )
 
     return data
