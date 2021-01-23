@@ -19,7 +19,7 @@ FEED_EXPORT_ENCODING = 'utf-8'
 
 API_URL = 'http://web:8000/api/posts/'
 
-user_pass = '%s:%s' % ('hosein', '1')
+user_pass = '%s:%s' % ('username', 'password')
 user_pass = user_pass.encode('utf-8')
 user_pass = b64encode(user_pass)
 user_pass = user_pass.decode('utf-8')

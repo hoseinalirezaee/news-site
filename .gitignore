@@ -1,3 +1,6 @@
 *.sqlite3
 *.http
 *.log
+
+*/venv
+.idea

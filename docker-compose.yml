@@ -8,8 +8,8 @@ services:
     expose:
       - 5432
     environment:
-      POSTGRES_PASSWORD: password
       POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
       POSTGRES_DB: news
 
   web:
@@ -21,8 +21,8 @@ services:
     depends_on:
       - postgres
     environment:
-      DJANGO_SUPERUSER_USERNAME: admin_user
-      DJANGO_SUPERUSER_PASSWORD: admin_password
+      DJANGO_SUPERUSER_USERNAME: username
+      DJANGO_SUPERUSER_PASSWORD: password
       DATABASE_USER: username
       DATABASE_PASS: password
       DATABASE_HOST: postgres
