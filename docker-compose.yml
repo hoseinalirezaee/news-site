@@ -1,6 +1,13 @@
 version: "3.7"
 
 services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER:  username
+      POSTGRES_DB: news
+
   web:
     build: ./News
     volumes:
@@ -10,10 +17,10 @@ services:
     depends_on:
       - postgres
     environment:
-      DJANGO_SUPERUSER_PASSWORD: 1
-      DJANGO_SUPERUSER_USERNAME: hosein
-      DATABASE_USER: root
-      DATABASE_PASS: 1
+      DJANGO_SUPERUSER_USERNAME: admin_user
+      DJANGO_SUPERUSER_PASSWORD: admin_password
+      DATABASE_USER: username
+      DATABASE_PASS: password
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
 
@@ -28,19 +35,12 @@ services:
     depends_on:
       - web
 
-  postgres:
-    image: postgres
-    environment:
-      POSTGRES_PASSWORD: 1
-      POSTGRES_USER: root
-      POSTGRES_DB: news
-
   crawler:
     build: ./crawler
     environment:
       API_URL: http://web:8000/api/posts/
-      API_USER: hosein
-      API_PASS: 1
+      API_USER: username
+      API_PASS: password
     depends_on:
       - web
 
