@@ -4,7 +4,7 @@ from django.utils.translation import gettext_noop
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = 'ReplaceThisValueWithYourVERYstrongSECRetKEy'
+SECRET_KEY = 'ReplaceThisValueWithYourVERStrongSECRetKEy'
 
 DEBUG = True
 
