@@ -12,6 +12,9 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: news
 
+  redis:
+    image: redis
+
   web:
     build: ./News
     volumes:
@@ -20,6 +23,7 @@ services:
         target: /app/statics
     depends_on:
       - postgres
+      - redis
     environment:
       DJANGO_SUPERUSER_USERNAME: username
       DJANGO_SUPERUSER_PASSWORD: password
@@ -27,6 +31,7 @@ services:
       DATABASE_PASS: password
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
+      REDIS_URL: redis://redis:6379
 
   nginx:
     build: ./Nginx

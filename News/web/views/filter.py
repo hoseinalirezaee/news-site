@@ -6,7 +6,6 @@ from ..filters import PostFilterSet
 
 class PostsListView(ListView):
     model = models.Post
-    ordering = '-date_posted'
     context_object_name = 'posts'
     paginate_by = 20
     template_name = 'posts_list.html'
@@ -15,4 +14,4 @@ class PostsListView(ListView):
         queryset = super().get_queryset()
         filter_set = PostFilterSet(self.request.GET, queryset)
         self.extra_context = {'filter_set': filter_set}
-        return filter_set.qs
+        return filter_set.qs.cache()

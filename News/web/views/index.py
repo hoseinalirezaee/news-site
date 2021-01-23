@@ -22,8 +22,8 @@ class Index(generic.TemplateView):
         if 'top_new_left' in context:
             context['top_news_slider'] = top_news.exclude(id__in=context['top_new_left'])
         if self.request.user.is_authenticated:
-            agencies = self.request.user.favorite_agencies.all()
-            cats = self.request.user.favorite_categories.all()
+            agencies = self.request.user.favorite_agencies.all().cache()
+            cats = self.request.user.favorite_categories.all().cache()
             categories = set()
             for cat in cats:
                 if cat.parent is None:
@@ -31,30 +31,24 @@ class Index(generic.TemplateView):
                     categories = categories.union(set(sub_cats))
                 else:
                     categories.add(cat)
-            recommended = models.Post.objects \
-                              .filter(agency__in=agencies, category__in=categories) \
-                              .order_by('-date_posted')[:8]
+            recommended = models.Post.objects.filter(agency__in=agencies, category__in=categories)[:8].cache()
             context['recommended'] = recommended
         return context
 
     def get_last_news(self):
-        last_news_queryset = models.Post.objects.filter(main_image__isnull=False) \
-                                 .order_by('-date_posted')[:self.last_news_size]
+        last_news_queryset = models.Post.objects.filter(main_image__isnull=False)[:self.last_news_size].cache()
         return last_news_queryset
 
     def get_last_news_with_category(self):
-        root_categories = models.Category.objects.filter(parent__isnull=True).exclude(
-            title='سایر'
-        )
+        root_categories = models.Category.objects.filter(parent__isnull=True).exclude(title='سایر').cache()
         last_news = {}
         for category in root_categories:
-            posts = models.Post.objects \
-                        .filter(category__in=category.sub_categories.all(), main_image__isnull=False) \
-                        .order_by('-date_posted')[:3]
+            posts = models.Post.objects.filter(category__in=category.sub_categories.all(),
+                                               main_image__isnull=False)[:3].cache()
             last_news[category] = posts
 
         return last_news
 
     def get_top_news(self):
-        posts = models.TopPost.objects.all().order_by('-date_posted')
+        posts = models.TopPost.objects.all().cache()
         return posts

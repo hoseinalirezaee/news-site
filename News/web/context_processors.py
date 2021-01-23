@@ -2,7 +2,7 @@ from db import models
 
 
 def get_root_categories(request):
-    categories = models.Category.objects.all()
+    categories = models.Category.objects.all().cache()
     data = {}
 
     for category in categories:
@@ -12,6 +12,5 @@ def get_root_categories(request):
                 list.append(category)
             except KeyError:
                 data[category.parent] = [category]
-    return {
-        'categories': data
-    }
+
+    return {'categories': data}

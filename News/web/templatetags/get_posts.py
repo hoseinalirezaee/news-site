@@ -12,7 +12,7 @@ choices = [1, 3, 5]
 @register.filter
 def get_posts(category):
     queryset = models.Post.objects.all().filter(
-        category__in=category.sub_categories.all()) if not category.parent else category.posts
+        category__in=category.sub_categories.all()).cache() if not category.parent else category.posts
 
     data = []
 

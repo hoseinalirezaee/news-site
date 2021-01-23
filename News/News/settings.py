@@ -23,7 +23,8 @@ INSTALLED_APPS = [
     'db',
     'interface',
     'web',
-    'rest_framework'
+    'rest_framework',
+    'cacheops',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +72,29 @@ DATABASES = {
     }
 }
 
+REDIS_URL = os.environ.get("REDIS_URL", default='redis://localhost:6379')
+
+CACHES = {
+    'default':
+        {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': f'{REDIS_URL}',
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            },
+        }
+}
+
+# Cacheops Settings
+CACHEOPS_DEFAULTS = {
+    'timeout': 60 * 60 * 1
+}
+
+CACHEOPS_REDIS = f"{REDIS_URL}/1"
+
+CACHEOPS = {
+    '*.*': {'ops': (), 'timeout': 60 * 60},
+}
 
 LANGUAGE_CODE = 'en'
 

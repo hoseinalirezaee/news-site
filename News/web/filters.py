@@ -10,20 +10,20 @@ class CategoryMultipleChoice(django_filters.ModelChoiceFilter):
             return qs
 
         if value.parent is None:
-            return qs.filter(category__in=value.sub_categories.all())
-        return qs.filter(category=value)
+            return qs.filter(category__in=value.sub_categories.all()).cache()
+        return qs.filter(category=value).cache()
 
 
 class SearchFiler(django_filters.CharFilter):
     def filter(self, qs, value):
         if value in ['', None]:
             return qs
-        return qs.filter(title__search=value)
+        return qs.filter(title__search=value).cache()
 
 
 class PostFilterSet(django_filters.FilterSet):
-    agency = django_filters.ModelChoiceFilter(queryset=models.Agency.objects.all(), label='خبرگزاری')
-    category = CategoryMultipleChoice(queryset=models.Category.objects.all(), label='دسته‌بندی')
+    agency = django_filters.ModelChoiceFilter(queryset=models.Agency.objects.all().cache(), label='خبرگزاری')
+    category = CategoryMultipleChoice(queryset=models.Category.objects.all().cache(), label='دسته‌بندی')
     query = SearchFiler(label='')
 
     class Meta:

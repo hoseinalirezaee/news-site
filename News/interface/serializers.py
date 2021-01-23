@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from cacheops.invalidation import invalidate_all
 from db import models
 from .categorymapper import map_category
 
@@ -63,6 +63,8 @@ class PostSerializer(serializers.Serializer):
             )
             last_top_news = models.TopPost.objects.order_by('-date_posted')[:10]
             models.TopPost.objects.exclude(id__in=last_top_news).delete()
+
+        invalidate_all()
 
         return post
 

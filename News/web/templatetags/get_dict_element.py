@@ -5,5 +5,10 @@ register = template.Library()
 
 @register.filter
 def get_dic_element(dictionary, key):
-    ret = dictionary[key]
-    return ret
+    if hasattr('dictionary', 'get'):
+        return dictionary.get(key, None)
+    else:
+        try:
+            return dictionary[key]
+        except KeyError:
+            return None
