@@ -1,10 +1,16 @@
-import jsonfield
+from jsonfield import JSONField
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.db import models
+from django.db import models, connection
 from django.db.models import Index
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+
+POSTGRESQL = False
+
+if connection.vendor == 'postgresql':
+    POSTGRESQL = True
+    from django.db.models import JSONField
 
 
 class User(AbstractUser):
@@ -35,7 +41,7 @@ class Post(models.Model):
     date_created = models.DateTimeField(_('date created'), auto_now_add=True)
     origin_id = models.CharField(_('origin id'), max_length=20, null=True, blank=True)
     origin_url = models.URLField(_('origin url'), max_length=1024)
-    paragraphs = jsonfield.JSONField()
+    paragraphs = JSONField()
 
     agency = models.ForeignKey(
         'Agency',
@@ -65,9 +71,11 @@ class Post(models.Model):
     def breadcrumb(self):
         breadcrumb = []
         current = self.category
-        while current is not None:
+
+        while current:
             breadcrumb.insert(0, current)
             current = current.parent
+
         return breadcrumb
 
     @property
