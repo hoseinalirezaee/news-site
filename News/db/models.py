@@ -39,7 +39,7 @@ class Post(models.Model):
     origin_id = models.CharField(_('origin id'), max_length=20, null=True, blank=True)
     origin_url = models.URLField(_('origin url'), max_length=1024)
 
-    paragraphs = models.JSONField(db_index=True)
+    paragraphs = models.JSONField(null=True)
 
     agency = models.ForeignKey(
         'Agency',
