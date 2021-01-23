@@ -1,4 +1,5 @@
 import jsonfield
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Index
@@ -87,7 +88,7 @@ class TopPost(models.Model):
 
 class UserFavoriteCategory(models.Model):
     user = models.ForeignKey(
-        User,
+        getattr(settings, "AUTH_USER_MODEL", "auth.User"),
         on_delete=models.PROTECT
     )
 
@@ -99,7 +100,7 @@ class UserFavoriteCategory(models.Model):
 
 class UserBookmark(models.Model):
     user = models.ForeignKey(
-        User,
+        getattr(settings, "AUTH_USER_MODEL", "auth.User"),
         on_delete=models.PROTECT
     )
     post = models.ForeignKey(
@@ -170,7 +171,7 @@ class Agency(models.Model):
 
 class FavoriteAgency(models.Model):
     user = models.ForeignKey(
-        User,
+        getattr(settings, "AUTH_USER_MODEL", "auth.User"),
         on_delete=models.PROTECT
     )
 
