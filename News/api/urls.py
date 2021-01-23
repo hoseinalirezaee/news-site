@@ -1,9 +1,7 @@
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 
-from . import views
+from News.api.views import news_interface
 
-router = DefaultRouter()
-
-router.register('posts', views.PostViewSet, 'post')
-
-urlpatterns = router.urls
+urlpatterns = [
+    path('posts/', news_interface),
+]
