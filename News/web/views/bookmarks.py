@@ -18,8 +18,7 @@ class BookmarksListView(ListView):
     context_object_name = 'bookmarks'
 
     def get_queryset(self):
-        user = self.get_user()
-        return models.UserBookmark.objects.filter(user=user)
+        return models.UserBookmark.objects.filter(user=self.get_user())
 
     def get_user(self):
         user = self.request.user
@@ -34,11 +33,14 @@ class BookmarkDeleteView(DeleteView):
     def get_success_url(self):
         return reverse('bookmarks')
 
-    def get_queryset(self):
+    def get_user(self):
         user = self.request.user
         if user.is_authenticated:
-            return models.UserBookmark.objects.filter(user=user)
+            return user
         raise Http404()
+
+    def get_queryset(self):
+        return models.UserBookmark.objects.filter(user=self.get_user())
 
 
 class AddBookmarkSerializer(serializers.ModelSerializer):
