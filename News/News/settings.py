@@ -9,6 +9,7 @@ SECRET_KEY = 'ReplaceThisValueWithYourVERStrongSECRetKEy'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+CORS_ALLOW_ALL_ORIGINS = True
 
 AUTH_USER_MODEL = 'db.User'
 
@@ -25,9 +26,11 @@ INSTALLED_APPS = [
     'web',
     'rest_framework',
     'cacheops',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
