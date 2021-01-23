@@ -2,7 +2,6 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.indexes import HashIndex
 from django.db import models
-from django.db.models import Index
 from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -150,8 +149,8 @@ class Tag(models.Model):
 
 
 class PostTag(models.Model):
-    post = models.ForeignKey(to=Post, on_delete=models.PROTECT)
-    tag = models.ForeignKey(to=Tag, on_delete=models.PROTECT)
+    post = models.ForeignKey(to='Post', on_delete=models.PROTECT)
+    tag = models.ForeignKey(to='Tag', on_delete=models.PROTECT)
 
     class Meta:
         constraints = [
@@ -183,7 +182,9 @@ class Agency(models.Model):
     image = models.URLField(_('image'), max_length=1024, null=True, blank=True)
 
     class Meta:
-        indexes = [Index(fields=['code'])]
+        indexes = [
+            HashIndex(fields=['code']),
+        ]
 
     def __str__(self):
         return self.title
@@ -199,6 +200,6 @@ class FavoriteAgency(models.Model):
     )
 
     agency = models.ForeignKey(
-        Agency,
+        'Agency',
         on_delete=models.PROTECT
     )
