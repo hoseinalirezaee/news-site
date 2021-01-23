@@ -6,17 +6,20 @@ from .categorymapper import map_category
 
 class PostSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=512)
-    postUrl = serializers.URLField(max_length=1024)
     summary = serializers.CharField(allow_null=True, required=False, allow_blank=True, max_length=2000)
-    mainImage = serializers.URLField(allow_null=True, required=False, max_length=1024)
-    category = serializers.CharField(max_length=200)
-    publishedDate = serializers.DateTimeField()
-    postId = serializers.IntegerField(allow_null=True, required=False)
-    paragraphs = serializers.JSONField()
-    tags = serializers.ListField(child=serializers.CharField(), allow_null=True, required=False)
     agencyTitle = serializers.CharField(max_length=100, allow_null=False, required=True)
     agencyCode = serializers.CharField(max_length=100, allow_null=False, required=True)
+    category = serializers.CharField(max_length=200)
+
+    postUrl = serializers.URLField(max_length=1024)
+    mainImage = serializers.URLField(allow_null=True, required=False, max_length=1024)
+
+    publishedDate = serializers.DateTimeField()
+    postId = serializers.IntegerField(allow_null=True, required=False)
     topPost = serializers.BooleanField(required=True)
+
+    paragraphs = serializers.JSONField()
+    tags = serializers.ListField(child=serializers.CharField(max_length=200), allow_null=True, required=False)
 
     def create(self, validated_data):
         category = models.Category.objects.get(
@@ -27,7 +30,7 @@ class PostSerializer(serializers.Serializer):
             code=validated_data['agencyCode']
         )
 
-        post, created = models.Post.objects.get_or_create(
+        post, post_created = models.Post.objects.get_or_create(
             title=validated_data['title'],
             defaults={
                 'summary': validated_data['summary'],
@@ -40,7 +43,7 @@ class PostSerializer(serializers.Serializer):
             }
         )
 
-        if created:
+        if post_created:
             post.paragraphs = validated_data['paragraphs']
             models.Tag.objects.bulk_create(
                 [models.Tag(title=tag) for tag in validated_data['tags']],
@@ -62,3 +65,6 @@ class PostSerializer(serializers.Serializer):
             models.TopPost.objects.exclude(id__in=last_top_news).delete()
 
         return post
+
+    def update(self, instance, validated_data):
+        pass
