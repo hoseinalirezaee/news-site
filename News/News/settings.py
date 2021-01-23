@@ -58,17 +58,13 @@ TEMPLATES = [
 WSGI_APPLICATION = 'News.wsgi.application'
 
 DATABASES = {
-    'sqlite': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    },
     'default': {
         'NAME': 'news',
         'ENGINE': 'django.db.backends.postgresql',
-        'USER': os.environ.get('DATABASE_USER'),
-        'PASSWORD': os.environ.get('DATABASE_PASS'),
-        'HOST': os.environ.get('DATABASE_HOST'),
-        'PORT': int(os.environ.get('DATABASE_PORT')),
+        'USER': os.environ.get('DATABASE_USER', 'username'),
+        'PASSWORD': os.environ.get('DATABASE_PASS', 'password'),
+        'HOST': os.environ.get('DATABASE_HOST', 'localhost'),
+        'PORT': int(os.environ.get('DATABASE_PORT', '5432')),
         'OPTIONS': {
             'connect_timeout': 10
         }

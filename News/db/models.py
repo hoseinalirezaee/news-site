@@ -1,16 +1,11 @@
-from jsonfield import JSONField
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.db import models, connection
+from django.contrib.postgres.indexes import HashIndex
+from django.db import models
 from django.db.models import Index
 from django.urls import reverse
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-
-POSTGRESQL = False
-
-if connection.vendor == 'postgresql':
-    POSTGRESQL = True
-    from django.db.models import JSONField
 
 
 class User(AbstractUser):
@@ -35,13 +30,17 @@ class User(AbstractUser):
 
 class Post(models.Model):
     title = models.CharField(_('title'), max_length=512, unique=True)
+
     summary = models.CharField(_('summary'), max_length=2000, null=True, blank=True)
     main_image = models.URLField(_('main image'), max_length=1024, null=True, blank=True)
-    date_posted = models.DateTimeField(_('date posted'))
-    date_created = models.DateTimeField(_('date created'), auto_now_add=True)
+
+    date_posted = models.DateTimeField(_('date posted'), default=now)
+    date_created = models.DateTimeField(_('date created'), default=now)
+
     origin_id = models.CharField(_('origin id'), max_length=20, null=True, blank=True)
     origin_url = models.URLField(_('origin url'), max_length=1024)
-    paragraphs = JSONField()
+
+    paragraphs = models.JSONField(db_index=True)
 
     agency = models.ForeignKey(
         'Agency',
@@ -64,6 +63,13 @@ class Post(models.Model):
         related_query_name='posts'
     )
 
+    class Meta:
+        ordering = ('-date_posted', '-date_created')
+
+        indexes = [
+            models.Index(fields=('-date_posted', '-date_created'))
+        ]
+
     def get_absolute_url(self):
         return reverse('post-detail', kwargs={'pk': self.id})
 
@@ -85,13 +91,20 @@ class Post(models.Model):
 
 class TopPost(models.Model):
     post = models.OneToOneField(
-        Post,
+        'Post',
         on_delete=models.CASCADE,
         related_name='top_posts',
         related_query_name='top_posts'
     )
 
-    date_posted = models.DateTimeField(_('date posted'))
+    date_posted = models.DateTimeField(_('date posted'), default=now)
+
+    class Meta:
+        ordering = ('-date_posted',)
+
+        indexes = [
+            models.Index(fields=('-date_posted',))
+        ]
 
 
 class UserFavoriteCategory(models.Model):
@@ -126,7 +139,7 @@ class Tag(models.Model):
 
     class Meta:
         indexes = [
-            Index(fields=('title',))
+            HashIndex(fields=('title',))
         ]
 
     def __str__(self):
@@ -141,7 +154,9 @@ class PostTag(models.Model):
     tag = models.ForeignKey(to=Tag, on_delete=models.PROTECT)
 
     class Meta:
-        unique_together = ['post', 'tag']
+        constraints = [
+            models.UniqueConstraint(fields=['post', 'tag'], name='post_tag_unique')
+        ]
 
 
 class Category(models.Model):
@@ -159,7 +174,7 @@ class Category(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '%s?category=%d' % (reverse('post-list-view'), self.id)
+        return f"{reverse('post-list-view')}?category={self.id}"
 
 
 class Agency(models.Model):
@@ -174,7 +189,7 @@ class Agency(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '%s?agency=%d' % (reverse('post-list-view'), self.id)
+        return f"{reverse('post-list-view')}?agency={self.id}"
 
 
 class FavoriteAgency(models.Model):
