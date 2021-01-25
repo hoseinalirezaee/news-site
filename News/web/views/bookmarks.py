@@ -90,7 +90,7 @@ class AddToBookmarkView(APIView):
     def get(self, request, post_id):
         post = models.Post.objects.get(id=post_id)
         user = self.request.user
-        if models.UserBookmark.objects.filter(user=user, post=post).cache().exists():
+        if models.UserBookmark.objects.filter(user=user, post=post).exists():
             return response.Response(
                 {'message': 'Found.'}
             )

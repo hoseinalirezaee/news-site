@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from cacheops.invalidation import invalidate_all
+from cacheops.invalidation import invalidate_obj, invalidate_model
 from db import models
 from .categorymapper import map_category
 
@@ -55,16 +55,16 @@ class PostSerializer(serializers.Serializer):
                 ignore_conflicts=True
             )
             post.save()
+            invalidate_model(models.Tag)
+            invalidate_obj(post)
 
-        if validated_data['topPost'] is True:
+        if validated_data['topPost']:
             models.TopPost.objects.get_or_create(
                 post=post,
                 date_posted=post.date_posted
             )
-            last_top_news = models.TopPost.objects.order_by('-date_posted')[:10]
+            last_top_news = models.TopPost.objects.all()[:10]
             models.TopPost.objects.exclude(id__in=last_top_news).delete()
-
-        invalidate_all()
 
         return post
 
