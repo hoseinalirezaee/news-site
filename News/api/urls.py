@@ -1,9 +1,7 @@
-from rest_framework.routers import DefaultRouter
+from django.urls import path, include
 
-from . import views
+app_name = 'app_api'
 
-router = DefaultRouter()
-
-router.register('posts', views.PostViewSet, 'post')
-
-urlpatterns = router.urls
+urlpatterns = [
+    path('interface/', include('interface.urls')),
+]

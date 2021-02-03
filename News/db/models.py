@@ -1,8 +1,9 @@
-import jsonfield
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.contrib.postgres.indexes import HashIndex
 from django.db import models
-from django.db.models import Index
 from django.urls import reverse
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
 
@@ -28,13 +29,17 @@ class User(AbstractUser):
 
 class Post(models.Model):
     title = models.CharField(_('title'), max_length=512, unique=True)
+
     summary = models.CharField(_('summary'), max_length=2000, null=True, blank=True)
     main_image = models.URLField(_('main image'), max_length=1024, null=True, blank=True)
-    date_posted = models.DateTimeField(_('date posted'))
-    date_created = models.DateTimeField(_('date created'), auto_now_add=True)
+
+    date_posted = models.DateTimeField(_('date posted'), default=now)
+    date_created = models.DateTimeField(_('date created'), default=now)
+
     origin_id = models.CharField(_('origin id'), max_length=20, null=True, blank=True)
     origin_url = models.URLField(_('origin url'), max_length=1024)
-    paragraphs = jsonfield.JSONField()
+
+    paragraphs = models.JSONField(null=True)
 
     agency = models.ForeignKey(
         'Agency',
@@ -57,6 +62,13 @@ class Post(models.Model):
         related_query_name='posts'
     )
 
+    class Meta:
+        ordering = ('-date_posted', '-date_created')
+
+        indexes = [
+            models.Index(fields=('-date_posted', '-date_created'))
+        ]
+
     def get_absolute_url(self):
         return reverse('post-detail', kwargs={'pk': self.id})
 
@@ -64,9 +76,11 @@ class Post(models.Model):
     def breadcrumb(self):
         breadcrumb = []
         current = self.category
-        while current is not None:
+
+        while current:
             breadcrumb.insert(0, current)
             current = current.parent
+
         return breadcrumb
 
     @property
@@ -76,18 +90,25 @@ class Post(models.Model):
 
 class TopPost(models.Model):
     post = models.OneToOneField(
-        Post,
+        'Post',
         on_delete=models.CASCADE,
         related_name='top_posts',
         related_query_name='top_posts'
     )
 
-    date_posted = models.DateTimeField(_('date posted'))
+    date_posted = models.DateTimeField(_('date posted'), default=now)
+
+    class Meta:
+        ordering = ('-date_posted',)
+
+        indexes = [
+            models.Index(fields=('-date_posted',))
+        ]
 
 
 class UserFavoriteCategory(models.Model):
     user = models.ForeignKey(
-        User,
+        getattr(settings, "AUTH_USER_MODEL", "auth.User"),
         on_delete=models.PROTECT
     )
 
@@ -99,7 +120,7 @@ class UserFavoriteCategory(models.Model):
 
 class UserBookmark(models.Model):
     user = models.ForeignKey(
-        User,
+        getattr(settings, "AUTH_USER_MODEL", "auth.User"),
         on_delete=models.PROTECT
     )
     post = models.ForeignKey(
@@ -117,7 +138,7 @@ class Tag(models.Model):
 
     class Meta:
         indexes = [
-            Index(fields=('title',))
+            HashIndex(fields=('title',))
         ]
 
     def __str__(self):
@@ -128,11 +149,13 @@ class Tag(models.Model):
 
 
 class PostTag(models.Model):
-    post = models.ForeignKey(to=Post, on_delete=models.PROTECT)
-    tag = models.ForeignKey(to=Tag, on_delete=models.PROTECT)
+    post = models.ForeignKey(to='Post', on_delete=models.PROTECT)
+    tag = models.ForeignKey(to='Tag', on_delete=models.PROTECT)
 
     class Meta:
-        unique_together = ['post', 'tag']
+        constraints = [
+            models.UniqueConstraint(fields=['post', 'tag'], name='post_tag_unique')
+        ]
 
 
 class Category(models.Model):
@@ -150,7 +173,7 @@ class Category(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '%s?category=%d' % (reverse('post-list-view'), self.id)
+        return f"{reverse('post-list-view')}?category={self.id}"
 
 
 class Agency(models.Model):
@@ -159,22 +182,24 @@ class Agency(models.Model):
     image = models.URLField(_('image'), max_length=1024, null=True, blank=True)
 
     class Meta:
-        indexes = [Index(fields=['code'])]
+        indexes = [
+            HashIndex(fields=['code']),
+        ]
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-        return '%s?agency=%d' % (reverse('post-list-view'), self.id)
+        return f"{reverse('post-list-view')}?agency={self.id}"
 
 
 class FavoriteAgency(models.Model):
     user = models.ForeignKey(
-        User,
+        getattr(settings, "AUTH_USER_MODEL", "auth.User"),
         on_delete=models.PROTECT
     )
 
     agency = models.ForeignKey(
-        Agency,
+        'Agency',
         on_delete=models.PROTECT
     )

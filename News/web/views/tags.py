@@ -12,6 +12,6 @@ class TagsListView(ListView):
 
     def get_queryset(self):
         tag = self.kwargs.get('tag')
-        qs = models.Post.objects.filter(tags__title=tag)
+        qs = models.Post.objects.filter(tags__title=tag).cache()
         self.extra_context = {'tag': tag}
         return qs

@@ -1,6 +1,7 @@
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import LoginView as BaseLoginView, LogoutView as BaseLogoutView
-from django.shortcuts import reverse, render
-from django.views import View
+from django.http import HttpResponseRedirect
+from django.shortcuts import reverse
 from django.views.generic.edit import CreateView
 
 from web.forms import auth
@@ -10,14 +11,18 @@ class SignUpView(CreateView):
     template_name = 'signup.html'
     form_class = auth.SignUpForm
 
+    def form_valid(self, form):
+        form.save()
+
+        username = self.request.POST['username']
+        password = self.request.POST['password1']
+
+        user = authenticate(username=username, password=password)
+        login(self.request, user)
+        return HttpResponseRedirect(self.get_success_url())
+
     def get_success_url(self):
-        return reverse('signup_success')
-
-
-class SignUpSuccessView(View):
-
-    def get(self, request):
-        return render(request, template_name='signup_success.html')
+        return reverse('landing')
 
 
 class LoginView(BaseLoginView):
@@ -25,12 +30,7 @@ class LoginView(BaseLoginView):
     redirect_authenticated_user = True
 
     def get_success_url(self):
-        return reverse('login-success')
-
-
-class LoginSuccessView(View):
-    def get(self, request):
-        return render(request, template_name='login_success.html')
+        return reverse('landing')
 
 
 class LogoutView(BaseLogoutView):

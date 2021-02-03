@@ -1,6 +1,20 @@
 version: "3.7"
 
 services:
+  postgres:
+    image: postgres
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: news
+
+  redis:
+    image: redis
+
   web:
     build: ./News
     volumes:
@@ -9,13 +23,15 @@ services:
         target: /app/statics
     depends_on:
       - postgres
+      - redis
     environment:
-      DJANGO_SUPERUSER_PASSWORD: 1
-      DJANGO_SUPERUSER_USERNAME: hosein
-      DATABASE_USER: root
-      DATABASE_PASS: 1
+      DJANGO_SUPERUSER_USERNAME: username
+      DJANGO_SUPERUSER_PASSWORD: password
+      DATABASE_USER: username
+      DATABASE_PASS: password
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
+      REDIS_URL: redis://redis:6379
 
   nginx:
     build: ./Nginx
@@ -28,19 +44,12 @@ services:
     depends_on:
       - web
 
-  postgres:
-    image: postgres
-    environment:
-      POSTGRES_PASSWORD: 1
-      POSTGRES_USER: root
-      POSTGRES_DB: news
-
   crawler:
     build: ./crawler
     environment:
-      API_URL: http://web:8000/api/posts/
-      API_USER: hosein
-      API_PASS: 1
+      API_URL: http://web:8000/api/interface/posts/
+      API_USER: username
+      API_PASS: password
     depends_on:
       - web
 

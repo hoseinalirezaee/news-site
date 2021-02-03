@@ -4,11 +4,12 @@ from django.utils.translation import gettext_noop
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = 'ReplaceThisValueWithYourVERYstrongSECRetKEy'
+SECRET_KEY = 'ReplaceThisValueWithYourVERStrongSECRetKEy'
 
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+CORS_ALLOW_ALL_ORIGINS = True
 
 AUTH_USER_MODEL = 'db.User'
 
@@ -21,12 +22,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'db',
-    'api',
+    'interface',
     'web',
-    'rest_framework'
+    'rest_framework',
+    'cacheops',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -58,23 +62,42 @@ TEMPLATES = [
 WSGI_APPLICATION = 'News.wsgi.application'
 
 DATABASES = {
-    'sqlite': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    },
     'default': {
         'NAME': 'news',
         'ENGINE': 'django.db.backends.postgresql',
-        'USER': os.environ.get('DATABASE_USER'),
-        'PASSWORD': os.environ.get('DATABASE_PASS'),
-        'HOST': os.environ.get('DATABASE_HOST'),
-        'PORT': int(os.environ.get('DATABASE_PORT')),
+        'USER': os.environ.get('DATABASE_USER', 'username'),
+        'PASSWORD': os.environ.get('DATABASE_PASS', 'password'),
+        'HOST': os.environ.get('DATABASE_HOST', 'localhost'),
+        'PORT': int(os.environ.get('DATABASE_PORT', '5432')),
         'OPTIONS': {
             'connect_timeout': 10
         }
     }
 }
 
+REDIS_URL = os.environ.get("REDIS_URL", default='redis://localhost:6379')
+
+CACHES = {
+    'default':
+        {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': f'{REDIS_URL}',
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            },
+        }
+}
+
+# Cacheops Settings
+CACHEOPS_DEFAULTS = {
+    'timeout': 60 * 60 * 1
+}
+
+CACHEOPS_REDIS = f"{REDIS_URL}/1"
+
+CACHEOPS = {
+    '*.*': {'ops': (), 'timeout': 60 * 60},
+}
 
 LANGUAGE_CODE = 'en'
 

@@ -27,34 +27,32 @@ class Index(generic.TemplateView):
             categories = set()
             for cat in cats:
                 if cat.parent is None:
-                    sub_cats = models.Category.objects.filter(parent=cat)
+                    sub_cats = models.Category.objects.filter(parent=cat).cache(timeout=60 * 60 * 24 * 15)
                     categories = categories.union(set(sub_cats))
                 else:
                     categories.add(cat)
-            recommended = models.Post.objects \
-                              .filter(agency__in=agencies, category__in=categories) \
-                              .order_by('-date_posted')[:8]
+            recommended = models.Post.objects.filter(agency__in=agencies, category__in=categories)[:8]
             context['recommended'] = recommended
         return context
 
     def get_last_news(self):
-        last_news_queryset = models.Post.objects.filter(main_image__isnull=False) \
-                                 .order_by('-date_posted')[:self.last_news_size]
+        last_news_queryset = models.Post.objects.filter(main_image__isnull=False)[:self.last_news_size]
         return last_news_queryset
 
-    def get_last_news_with_category(self):
-        root_categories = models.Category.objects.filter(parent__isnull=True).exclude(
-            title='سایر'
-        )
+    @staticmethod
+    def get_last_news_with_category():
+        root_categories = models.Category.objects.filter(parent__isnull=True).exclude(title='سایر').cache(
+            timeout=60 * 60 * 24 * 15)
         last_news = {}
         for category in root_categories:
-            posts = models.Post.objects \
-                        .filter(category__in=category.sub_categories.all(), main_image__isnull=False) \
-                        .order_by('-date_posted')[:3]
+            posts = models.Post.objects.filter(
+                category__in=category.sub_categories.all().cache(timeout=60 * 60 * 24 * 15),
+                main_image__isnull=False)[:3]
             last_news[category] = posts
 
         return last_news
 
-    def get_top_news(self):
-        posts = models.TopPost.objects.all().order_by('-date_posted')
+    @staticmethod
+    def get_top_news():
+        posts = models.TopPost.objects.all().cache()
         return posts
