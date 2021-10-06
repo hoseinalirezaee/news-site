@@ -3,6 +3,6 @@ beautifulsoup4==4.8.2
 fastjsonschema==2.14.2
 jdatetime==3.6.2
 requests==2.22.0
-Scrapy==2.0.1
+Scrapy==2.5.1
 pytz==2019.3
 
